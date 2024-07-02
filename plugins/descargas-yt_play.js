@@ -4,51 +4,49 @@ import ytdl from 'ytdl-core';
 import axios from 'axios';
 import {youtubedl, youtubedlv2} from '@bochilteam/scraper';
 const handler = async (m, {conn: natsuki, command, args, text, usedPrefix}) => {
-let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD }}, "participant": "0@s.whatsapp.net" }
-if (!text) throw > ⓘ 𝙴𝚂𝙲𝚁𝙸𝙱𝙰 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴 𝙾 𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾́𝙽 𝚀𝚄𝙴 𝚀𝚄𝙸𝙴𝚁𝙴 𝚀𝚄𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝚄𝙴, 𝙴𝙹𝙴𝙼𝙿𝙻𝙾: ${usedPrefix + command} \`Ari Abdul Babydoll\`
+let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
+if (!text) throw `> ⓘ 𝙴𝚂𝙲𝚁𝙸𝙱𝙰 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴 𝙾 𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾́𝙽 𝚀𝚄𝙴 𝚀𝚄𝙸𝙴𝚁𝙴 𝚀𝚄𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝚄𝙴, 𝙴𝙹𝙴𝙼𝙿𝙻𝙾: ${usedPrefix + command} \`Ari Abdul Babydoll\``
 try { 
 const yt_play = await search(args.join(' '))
 const texto1 = `
-AQUI ESTA @${m.sender.replace(/@.+/, '')}
- 𝑻𝑰𝑻𝑼𝑳𝑶
+*AQUI ESTA* @${m.sender.replace(/@.+/, '')}
+𝑻𝑰𝑻𝑼𝑳𝑶
    ${yt_play[0].title}
-
- 𝑷𝑼𝑩𝑳𝑰𝑪𝑨𝑫𝑶
-  ${yt_play[0].ago}
-
- 𝑫𝑼𝑹𝑨𝑪𝑰𝑶𝑵
+   
+𝑫𝑼𝑹𝑨𝑪𝑰𝑶𝑵
   ${secondString(yt_play[0].duration.seconds)}
-  
- 𝑼𝑹𝑳
+
+𝑽𝑰𝑺𝑻𝑨𝑺
+  ${MilesNumber(yt_play[0].views)}
+
+𝑼𝑹𝑳
 𖤍 ${yt_play[0].url}
-✧══════•❁❀❁•══════✧`.trim()
+*✧══════•❁❀❁•══════✧*`.trim()
 
-await natsuki.sendButton(m.chat, wm, texto1, yt_play[0].thumbnail, [
-['AUDIO', ${usedPrefix}yta ${yt_play[0].url], 
-['VIDEO', ${usedPrefix}ytv ${yt_play[0].url]], null, null, m)
+await natsuki.sendButton(m.chat, wm, texto1, yt_play[0].thumbnail, [['𝙼 𝙴 𝙽 𝚄', '/menu']], null, null, m)
 
-/*let listSections = [];             
+let listSections = [];             
 listSections.push({
-title: ' 𝚂𝙴𝙻𝙴𝙲𝙲𝙸𝙾𝙽𝙴 𝚂𝚄 𝚃𝙸𝙿𝙾 𝙳𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰 (𝙉𝙖𝙩𝙨𝙪𝙠𝙞𝘽𝙤𝙩)',
-rows: [{ header: "𝙰 𝚄 𝙳 𝙸 𝙾 (Opcion 1)", title: "", id: ${usedPrefix}yta ${yt_play[0].url}, description: ${yt_play[0].title}\n }, { header: "𝙰 𝚄 𝙳 𝙸 𝙾 (Opcion 2)", title: "", id: ${usedPrefix}play.1 ${yt_play[0].url}, description: ${yt_play[0].title}\n },
-{ header: "𝙰 𝚄 𝙳 𝙸 𝙾  𝐃 𝐎 𝐂", title: "", id: ${usedPrefix}ytmp3doc ${yt_play[0].url}, description: ${yt_play[0].title}\n },
-{ header: "𝚅 𝙸 𝙳 𝙴 𝙾 (Opcion 1)", title: "", id: ${usedPrefix}ytv ${yt_play[0].url}, description: ${yt_play[0].title}\n },
-{ header: "𝚅 𝙸 𝙳 𝙴 𝙾 (Opcion 2)", title: "", id: ${usedPrefix}play.2 ${yt_play[0].url}, description: ${yt_play[0].title}\n },
-{header: "𝚅 𝙸 𝙳 𝙴 𝙾  𝐃 𝐎 𝐂", title: "", id: ${usedPrefix}ytmp4doc ${yt_play[0].url}, description: ${yt_play[0].title}\n}
+title: ' 𝚂𝙴𝙻𝙴𝙲𝙲𝙸𝙾𝙽𝙴 𝚂𝚄 𝚃𝙸𝙿𝙾 𝙳𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰 ()',
+rows: [{ header: "𝙰 𝚄 𝙳 𝙸 𝙾 (Opcion 1)", title: "", id: `${usedPrefix}yta ${yt_play[0].url}`, description: `${yt_play[0].title}\n` }, { header: "𝙰 𝚄 𝙳 𝙸 𝙾 (Opcion 2)", title: "", id: `${usedPrefix}play.1 ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "𝙰 𝚄 𝙳 𝙸 𝙾  𝐃 𝐎 𝐂", title: "", id: `${usedPrefix}ytmp3doc ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "𝚅 𝙸 𝙳 𝙴 𝙾 (Opcion 1)", title: "", id: `${usedPrefix}ytv ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "𝚅 𝙸 𝙳 𝙴 𝙾 (Opcion 2)", title: "", id: `${usedPrefix}play.2 ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{header: "𝚅 𝙸 𝙳 𝙴 𝙾  𝐃 𝐎 𝐂", title: "", id: `${usedPrefix}ytmp4doc ${yt_play[0].url}`, description: `${yt_play[0].title}\n`}
 ]});
 
 /*listSections.push({
-  text: *𝙴𝙻𝙸𝙹𝙰 𝚀𝚄𝙴 𝚅𝙰 𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽  ${text}*,
+  text: `*𝙴𝙻𝙸𝙹𝙰 𝚀𝚄𝙴 𝚅𝙰 𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽  ${text}*`,
   footer: global.wm,
   title: ` 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚂 `,
-  buttonText: 𝙴𝙻𝙸𝙹𝙰,
+  buttonText: `𝙴𝙻𝙸𝙹𝙰`,
   sections
 }) */
 
-//await natsuki.sendList(m.chat, texto1, null, 𝙴𝙻𝙴𝙹𝙸𝚁, listSections, {quoted: fkontak});
+await natsuki.sendList(m.chat, `*𝚂𝙴𝙻𝙴𝙲𝙲𝙸𝙾𝙽𝙴 𝚂𝚄 𝚃𝙸𝙿𝙾 𝙳𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰, 𝙽𝙾𝙼𝙱𝚁𝙴 𝙳𝙴 𝙻𝙰 𝙱𝚄𝚂𝚀𝚄𝙴𝙳𝙰:  ${text}*`, `\n𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚂* `, `𝙴𝙻𝙴𝙹𝙸𝚁`, listSections, {quoted: fkontak});
 } catch (e) {
-await natsuki.reply(m.chat, ${lenguajeCD['smsMalError3']()}#report ${lenguajeCD['smsMensError2']()} ${usedPrefix + command}\n\n${wm}, fkontak, m)
-console.log(❗❗ ${lenguajeCD['smsMensError2']()} ${usedPrefix + command} ❗❗)
+await natsuki.reply(m.chat, `${lenguajeCD['smsMalError3']()}#report ${lenguajeCD['smsMensError2']()} ${usedPrefix + command}\n\n${wm}`, fkontak, m)
+console.log(`❗❗ ${lenguajeCD['smsMensError2']()} ${usedPrefix + command} ❗❗`)
 console.log(e)
 handler.limit = 0
 }}
@@ -82,7 +80,6 @@ const mDisplay = m > 0 ? m + (m == 1 ? ' minuto, ' : ' minutos, ') : '';
 const sDisplay = s > 0 ? s + (s == 1 ? ' segundo' : ' segundos') : '';
 return dDisplay + hDisplay + mDisplay + sDisplay;
 }
-
 
 
 
