@@ -28,7 +28,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   }
 
   if (command === 'veroles') {
-    let allRoles = Object.values(global.db.data.users).filter(u => u.roleAssigned);
+    let allRoles = Object.values(global.db.data.users).filter(u => u.roleAssigned && u.jid);
     if (allRoles.length === 0) throw '✳️ No hay roles asignados.';
 
     let rolesText = allRoles.map((u, i) => `
@@ -65,8 +65,9 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   targetUser.description = description.trim();
   targetUser.roleTime = +new Date();
   targetUser.roleAssigned = true;
-  let sn = createHash('md5').update(targetUser.jid).digest('hex');
+  let sn = createHash('md5').update(m.sender).digest('hex'); // Use m.sender instead of targetUser.jid
   targetUser.serialNumber = sn;
+  targetUser.jid = m.sender;
 
   let txt = `
   ╭─「 \`¡Asignación de Rol Exitosa!\` 」
