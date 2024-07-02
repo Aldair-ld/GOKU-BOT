@@ -12,9 +12,15 @@ conn.on('group-participants-update', async (update) => {
     if (action === 'add' && welcomeActive) {
         for (let participant of participants) {
             const welcomeText = `
-            👋 ¡Bienvenido/a al grupo!
-            🔹 *Nombre:* @${participant.split('@')[0]}
-            🔹 *Lea las reglas del grupo para mantener la armonía.*
+            ✨𝗕𝗜𝗘𝗡𝗩𝗘𝗡𝗜𝗗𝗢✨
+
+¡Hola, @user Te damos la más cordial bienvenida al grupo  𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾™️ ⛈. Esperamos que disfrutes de tu estancia y te diviertas en nuestra comunidad.
+
+Si quieres ver la lista de comandos usa el siguiente comando para hacerlo:
+
+🔑 /menu
+
+¡Gracias por unirte y esperamos que te diviertas en 𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾™️ ⛈!
             `.trim();
 
             const videoUrl = 'https://telegra.ph/file/bc4f2a2d2b60e97550f8f.mp4'; // URL del video de bienvenida
