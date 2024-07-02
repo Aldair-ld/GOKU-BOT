@@ -1,37 +1,59 @@
-import { createHash } from 'crypto' 
-import PhoneNumber from 'awesome-phonenumber'
-import fetch from 'node-fetch'
-let handler = async (m, { conn, usedPrefix }) => {
-let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
-let pp = 'https://telegra.ph/file/e81571ce792cc4f8a3284.mp4'
-//const pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => './src/avatar_contact.png')
-let user = global.db.data.users[m.sender]
-let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-try {
-pp = await conn.getProfilePicture(who)         //pp = await conn.getProfilePicture(who)
-} catch (e) {
+import { createHash } from 'crypto';
+import PhoneNumber from 'awesome-phonenumber';
+import fetch from 'node-fetch';
 
-} finally {
-let { name, limit, lastclaim, registered, regTime, age } = global.db.data.users[who]
-//let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-let mentionedJid = [who]
-let username = conn.getName(who)
-let prem = global.prems.includes(who.split`@`[0])
-let sn = createHash('md5').update(who).digest('hex')
-let str =
+let handler = async (m, { conn, usedPrefix }) => {
+    let fkontak = {
+        "key": {
+            "participants": "0@s.whatsapp.net",
+            "remoteJid": "status@broadcast",
+            "fromMe": false,
+            "id": "Halo"
+        },
+        "message": {
+            "contactMessage": {
+                "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
+            }
+        },
+        "participant": "0@s.whatsapp.net"
+    };
+
+    let pp = 'https://telegra.ph/file/e81571ce792cc4f8a3284.mp4'; // URL de imagen por defecto
+
+    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
+
+    try {
+        pp = await conn.getProfilePicture(who); // Obtener foto de perfil del usuario
+    } catch (e) {
+        // Error al obtener la foto de perfil
+    } finally {
+        let user = global.db.data.users[who];
+        let { name, limit, registered, regTime, age } = user;
+
+        let prem = global.prems.includes(who.split`@`[0]);
+        let status = user.banned ? 'BANEADO' : 'LIBRE';
+
+        let str =
 `
-┃ *[ 👤 ] USUARIO:* ${name} ${user.registered === true ? 'ͧͧͧͦꙶͣͤ✓ᚲᴳᴮ' : ''}
-┃ *[ ⚛️ ] NUMERO:* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-┃ *[ ♠ ] ENLACE:* wa.me/${who.split`@`[0]}${registered ?'\n┃ 𝙀𝘿𝘼𝘿 ' + age + ' *años*' : ''}
-┃ *[ 💎 ] DIAMANTES:* *${limit}*
-┃ *[ 💮 ] REGISTRADO:* (𝘼) ${registered ? '✅': '❎'}
-┃ *[ 🔰 ] PREMIUM:* ${prem ? '✅' : '❎'}
-┃ 𝙉𝙐𝙈𝙀𝙍𝙊 𝘿𝙀 𝙎𝙀𝙍𝙄𝙀
-┃ *${sn}*`.trim()
-    conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid }}) 
-  }
-}
-handler.help = ['profile [@user]']
-handler.tags = ['xp']
-handler.command = /^perfil|profile?$/i
-export default handler
+[#𝚄𝚁𝙰𝙱𝙴_𝙼𝙸𝙺𝙾𝚃𝙾] PERFIL DE USUARIO
+
+[👤] NOMBRE →  ${conn.getName(who)}
+[🔗] ID →  ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
+[💰] DIAMANTES →  ${limit}
+[📊] PREMIUM →  ${prem ? '✅' : '❎'}
+[🔒] ESTADO →  ${status}
+[📅] FECHA DE REGISTRO →  ${new Date(regTime).toLocaleString()}
+`.trim();
+
+        const mentionedJid = [who];
+        const sn = createHash('md5').update(who).digest('hex');
+
+        conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid } });
+    }
+};
+
+handler.help = ['perfil [@usuario]'];
+handler.tags = ['xp'];
+handler.command = /^perfil|profile?$/i;
+
+export default handler;
