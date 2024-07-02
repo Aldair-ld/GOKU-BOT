@@ -1,9 +1,6 @@
 import { createHash } from 'crypto';
 import axios from 'axios';
 
-// Definir el número del propietario del bot
-const OWNER_NUMBER = '51925015528';  // Reemplaza con tu número de WhatsApp
-
 let RoleReg = /\|?(.*)\,(.*)\,(.*)$/i;
 
 let handler = async function (m, { conn, text, usedPrefix, command }) {
@@ -53,14 +50,11 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     return;
   }
 
-  if (m.sender !== OWNER_NUMBER) throw '✳️ Solo el propietario del bot puede asignar roles.';
-
   if (!RoleReg.test(text)) throw `⚠️ Formato incorrecto.\n\n✳️ Usa este comando: *${usedPrefix + command} nombre, rol, descripción*\n📌 Ejemplo: *${usedPrefix + command}* ${name2}, Moderador, Encargado de moderar las discusiones`;
 
   let [_, targetName, role, description] = text.match(RoleReg);
-  let targetUser = Object.values(global.db.data.users).find(u => conn.getName(u.jid) === targetName.trim());
+  let targetUser = user;
 
-  if (!targetUser) throw '✳️ El usuario no fue encontrado.';
   if (!targetName) throw '✳️ El nombre no puede estar vacío.';
   if (!role) throw '✳️ El rol no puede estar vacío.';
   if (!description) throw '✳️ La descripción no puede estar vacía.';
@@ -97,6 +91,6 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
 
 handler.help = ['roles', 'mirol', 'veroles'].map(v => v + ' <nombre, rol, descripción>');
 handler.tags = ['roles'];
-handler.command = ['turol', 'roles', 'rol', 'assignrole', 'asignarrol', 'mirol', 'veroles']; 
+handler.command = ['roles', 'rol', 'assignrole', 'asignarrol', 'mirol', 'veroles']; 
 
 export default handler;
