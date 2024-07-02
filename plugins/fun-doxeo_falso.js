@@ -1,7 +1,6 @@
-import { createHash } from 'crypto';
 import axios from 'axios';
 
-let RoleReg = /\|?(.*)\,(.*)\,(.*)$/i;
+let RoleReg = /\.rol\s+(.*?)\-(.*?)\-(.*)$/i;
 
 let handler = async function (m, { conn, text, usedPrefix, command }) {
   let user = global.db.data.users[m.sender];
@@ -15,8 +14,6 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     │🔖 *NOMBRE:* ${user.name}
     │📝 *ROL:* ${user.role}
     │📋 *DESCRIPCIÓN:* ${user.description}
-    │🔑 *SERIAL NUMBER:* 
-    │    ${user.serialNumber}
     │
     │ *Gracias por usar el bot* 
     │📝 Usa .menu para ver el menú de comandos.
@@ -36,7 +33,6 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     🔖 *NOMBRE:* ${u.name}
     📝 *ROL:* ${u.role}
     📋 *DESCRIPCIÓN:* ${u.description}
-    🔑 *SERIAL NUMBER:* ${u.serialNumber}
     📱 *WHATSAPP:* ${u.jid.replace('@s.whatsapp.net', '')}
     `).join('\n\n');
 
@@ -50,33 +46,27 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     return;
   }
 
-  if (!RoleReg.test(text)) throw `⚠️ Formato incorrecto.\n\n✳️ Usa este comando: *${usedPrefix + command} nombre, rol, descripción*\n📌 Ejemplo: *${usedPrefix + command}* ${name2}, Moderador, Encargado de moderar las discusiones`;
+  if (!RoleReg.test(text)) throw `⚠️ Formato incorrecto.\n\n✳️ Usa este comando: *${usedPrefix}rol nombre-rol-descripción*\n📌 Ejemplo: *${usedPrefix}rol* ${name2}-Moderador-Encargado de moderar las discusiones`;
 
   let [_, targetName, role, description] = text.match(RoleReg);
-  let targetUser = user;
 
   if (!targetName) throw '✳️ El nombre no puede estar vacío.';
   if (!role) throw '✳️ El rol no puede estar vacío.';
   if (!description) throw '✳️ La descripción no puede estar vacía.';
   if (targetName.length >= 30) throw '✳️ El nombre es muy largo.';
 
-  targetUser.name = targetName.trim();
-  targetUser.role = role.trim();
-  targetUser.description = description.trim();
-  targetUser.roleTime = +new Date();
-  targetUser.roleAssigned = true;
-  let sn = createHash('md5').update(m.sender).digest('hex'); // Use m.sender instead of targetUser.jid
-  targetUser.serialNumber = sn;
-  targetUser.jid = m.sender;
+  user.name = targetName.trim();
+  user.role = role.trim(); // Actualizamos el rol aquí
+  user.description = description.trim();
+  user.roleTime = +new Date();
+  user.roleAssigned = true;
 
   let txt = `
   ╭─「 \`¡Asignación de Rol Exitosa!\` 」
   │
-  │🔖 *NOMBRE:* ${targetUser.name}
-  │📝 *ROL:* ${targetUser.role}
-  │📋 *DESCRIPCIÓN:* ${targetUser.description}
-  │🔑 *SERIAL NUMBER:* 
-  │    ${sn}
+  │🔖 *NOMBRE:* ${user.name}
+  │📝 *ROL:* ${user.role}
+  │📋 *DESCRIPCIÓN:* ${user.description}
   │
   │ *Gracias por asignar tu rol* 
   │📝 Usa .menu para ver el menú de comandos.
@@ -90,8 +80,8 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   await m.react("✅");
 }
 
-handler.help = ['roles', 'mirol', 'veroles'].map(v => v + ' <nombre, rol, descripción>');
+handler.help = ['rol <nombre-rol-descripción>'];
 handler.tags = ['roles'];
-handler.command = ['roles', 'rol', 'assignrole', 'asignarrol', 'mirol', 'veroles']; 
+handler.command = ['rol', 'assignrol', 'asignarrol', 'mirol', 'veroles']; 
 
 export default handler;
