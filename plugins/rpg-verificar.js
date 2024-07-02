@@ -46,7 +46,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   ╰─「──────────────」
   `.trim();
 
-  const url = "https://i.imgur.com/QeY0qzN.png";
+  const url = "https://tinyurl.com/2zkjq56q";
   const responseImg = await axios.get(url, { responseType: 'arraybuffer' });
   await conn.sendFile(m.chat, responseImg.data, "thumbnail.png", txt, m); 
   await m.react("✅");
