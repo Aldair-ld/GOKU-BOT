@@ -53,10 +53,10 @@ conn.on('chat-update', async (chatUpdate) => {
         const command = messageContent.split(' ')[0];
         const args = messageContent.split(' ').slice(1);
 
-        if (command === '.off' && args[0] === 'bienvenida') {
+        if (command === '.apagar' && args[0] === 'bienvenida') {
             welcomeActive = false;
             await conn.sendMessage(m.key.remoteJid, '🛑 El comando de bienvenida ha sido desactivado.', MessageType.text);
-        } else if (command === '.on' && args[0] === 'bienvenida') {
+        } else if (command === '.prender' && args[0] === 'bienvenida') {
             welcomeActive = true;
             await conn.sendMessage(m.key.remoteJid, '✅ El comando de bienvenida ha sido activado.', MessageType.text);
         }
