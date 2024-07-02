@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
 import PhoneNumber from 'awesome-phonenumber';
-import fetch from 'node-fetch';
 
 let handler = async (m, { conn, usedPrefix }) => {
     let fkontak = {
@@ -30,6 +29,9 @@ let handler = async (m, { conn, usedPrefix }) => {
         let user = global.db.data.users[who];
         let { name, limit, registered, regTime, age } = user;
 
+        // Generar el enlace de referido único para el usuario
+        const referralLink = generateReferralLink(who); // Debes implementar esta función
+
         let prem = global.prems.includes(who.split`@`[0]);
         let status = user.banned ? 'BANEADO' : 'LIBRE';
 
@@ -43,6 +45,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 [📊] PREMIUM →  ${prem ? '✅' : '❎'}
 [🔒] ESTADO →  ${status}
 [📅] FECHA DE REGISTRO →  ${new Date(regTime).toLocaleString()}
+[🔗] ENLACE DE REFERIDO →  ${referralLink}
 `.trim();
 
         const mentionedJid = [who];
@@ -50,6 +53,11 @@ let handler = async (m, { conn, usedPrefix }) => {
 
         conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid } });
     }
+};
+
+// Función para generar el enlace de referido único
+const generateReferralLink = (userId) => {
+    return `https://api.whatsapp.com/send/?phone=${userId.split('@')[0]}&text=.menu`;
 };
 
 handler.help = ['perfil [@usuario]'];
