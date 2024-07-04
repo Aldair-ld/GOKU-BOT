@@ -32,8 +32,8 @@ Qué lindo es el amor ❤️
     }
 };
 
-handler.help = ['admingay <opcional: mensaje>'];
+handler.help = ['aldairgay <opcional: mensaje>'];
 handler.tags = ['personal'];
-handler.command = /^admingay$/i;
+handler.command = /^aldairgay$/i;
 
 module.exports = handler;
