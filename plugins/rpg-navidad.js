@@ -1,90 +1,94 @@
 const { MessageType } = require('@adiwajshing/baileys');
-const fs = require('fs');
 
 // Base de datos simulada (puedes usar una base de datos real como MongoDB o SQLite)
-let db = {
-    users: {}, // Aquí se almacenarán los datos de los usuarios
-};
+let users = {};
 
 // Número de teléfono del bot (debes configurar esto con el número real del bot)
 const botNumber = '51973846456'; // Ejemplo, reemplaza con el número real del bot
 
+// Función para generar un ID único (simulación)
+const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 9); // Genera un ID aleatorio de 9 caracteres
+};
+
 // Generador de enlaces de referidos únicos
 const generateReferralLink = (userId) => {
-    return `https://api.whatsapp.com/send/?phone=${botNumber}&text=.menu%20${userId}`;
+    return `https://api.whatsapp.com/send/?phone=${botNumber}&text=.registro%20${userId}`;
 };
 
 // Comando para mostrar el enlace de referidos único y número de referidos
-const handler = async (m, { conn }) => {
-    let user = db.users[m.sender];
+const handleReferCommand = async (message, conn) => {
+    const userId = message.sender;
 
-    if (!user) {
-        user = {
-            name: conn.getName(m.sender), // Obtener nombre del usuario
+    // Verificar si el usuario existe en la base de datos
+    if (!users[userId]) {
+        users[userId] = {
             referrals: [], // Inicializar lista de referidos
             diamonds: 0, // Inicializar diamantes del usuario
+            referralCode: generateUniqueId(), // Generar código de referido único para el usuario
         };
-        db.users[m.sender] = user; // Guardar nuevo usuario en la base de datos
     }
 
     // Generar enlace de referido único para el usuario actual
-    const referralLink = generateReferralLink(m.sender);
+    const referralLink = generateReferralLink(users[userId].referralCode);
 
     // Mostrar mensaje con el enlace de referidos único y número de referidos
-    const message = `
+    const responseMessage = `
 🔗 ¡Bienvenido al sistema de referidos!
 
 Tu enlace de referidos: ${referralLink}
-Número de referidos: *${user.referrals.length}*
+Número de referidos: *${users[userId].referrals.length}*
 
 Invita a tus amigos usando tu enlace de referidos y gana recompensas.
     `.trim();
 
     // Enviar mensaje al usuario
-    conn.sendMessage(m.chat, message, MessageType.text);
+    conn.sendMessage(message.chat, responseMessage, MessageType.text);
 };
 
-// Manejador para cuando alguien use un enlace de referido generado
-const handleReferralLink = async (m, { conn }) => {
-    // Obtener el ID de usuario del enlace de referido
-    const userId = m.text.split(' ')[1];
+// Manejador para cuando alguien se registra usando un enlace de referido
+const handleReferralLink = async (message, conn) => {
+    const referredUserId = message.text.split(' ')[1];
+    const referrerUserId = message.sender;
 
-    if (!userId || !db.users[userId]) {
-        return conn.sendMessage(m.chat, 'Enlace de referido inválido.', MessageType.text);
+    // Verificar si el código de referido es válido y si el usuario refirió existe
+    if (!referredUserId || !users[referrerUserId] || !users[referredUserId]) {
+        return conn.sendMessage(message.chat, 'Enlace de referido inválido.', MessageType.text);
     }
 
-    // Añadir el usuario actual como referido del usuario que generó el enlace
-    db.users[userId].referrals.push(m.sender);
+    // Verificar si el usuario ya ha sido referido previamente
+    if (users[referrerUserId].referrals.includes(referredUserId)) {
+        return conn.sendMessage(message.chat, 'Ya has referido a este usuario anteriormente.', MessageType.text);
+    }
 
-    // Otorgar recompensa de 10 diamantes al usuario que generó el enlace
-    db.users[userId].diamonds += 10;
+    // Registrar el nuevo referido y otorgar recompensa de 50 diamantes al usuario que refirió
+    users[referrerUserId].referrals.push(referredUserId);
+    users[referrerUserId].diamonds += 50;
 
     // Mostrar mensaje de confirmación al usuario que usó el enlace
-    const message = `
+    const confirmationMessage = `
 🎉 ¡Te has registrado exitosamente como referido!
 
-Has ganado *10 diamantes* como recompensa.
+Has ganado *50 diamantes* como recompensa para ${users[referrerUserId].name}.
     `.trim();
 
     // Enviar mensaje al usuario que usó el enlace
-    conn.sendMessage(m.chat, message, MessageType.text);
+    conn.sendMessage(message.chat, confirmationMessage, MessageType.text);
 };
 
-// Ayuda para los comandos
-handler.help = ['referido', 'ref', 'codigo'];
-handler.tags = ['referral'];
-handler.command = /^referido|ref(code)?$/i;
+// Ejemplo de uso en un bot de WhatsApp (pseudocódigo)
+const handleIncomingMessage = async (message, conn) => {
+    const text = message.text.toLowerCase();
 
-// Manejar mensajes que contienen un enlace de referido generado
-conn.on('chat-update', async (m) => {
-    if (!m.hasNewMessage) return;
-    const message = m.messages.all()[0];
-    if (!message.message || !message.message.extendedTextMessage) return;
-    const text = message.message.extendedTextMessage.text;
-    if (!text.startsWith('.menu')) return;
+    if (text.startsWith('/referir')) {
+        // Manejar comando para obtener enlace de referido
+        handleReferCommand(message, conn);
+    } else if (text.startsWith('/registro')) {
+        // Manejar uso de enlace de referido
+        handleReferralLink(message, conn);
+    }
+};
 
-    // Manejar el enlace de referido
-    handleReferralLink(message, { conn });
-});
-
-module.exports = handler;
+module.exports = {
+    handleIncomingMessage
+};
