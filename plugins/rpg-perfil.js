@@ -37,15 +37,19 @@ let handler = async (m, { conn, usedPrefix }) => {
 
         let str =
 `
-[#𝚄𝚁𝙰𝙱𝙴_𝙼𝙸𝙺𝙾𝚃𝙾] PERFIL DE USUARIO
+[#URABE_MIKOTO]
 
-[👤] NOMBRE →  ${conn.getName(who)}
-[🔗] ID →  ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-[💰] DIAMANTES →  ${limit}
-[📊] PREMIUM →  ${prem ? '✅' : '❎'}
-[🔒] ESTADO →  ${status}
-[📅] FECHA DE REGISTRO →  ${new Date(regTime).toLocaleString()}
-[🔗] ENLACE DE REFERIDO →  ${referralLink}
+*PERFIL COMPLETO DE* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
+
+*DATOS GENERALES*
+
+*[🙎‍♂️] ID →* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
+*[🗒] NOMBRES →*  ${conn.getName(who)}
+*[💎] DIAMANTES →*  ${limit}
+*[〽️] PREMIUM →*  ${prem ? '✅' : '❎'}
+*[👺] ESTADO →*  ${status}
+*[📅] FECHA DE REGISTRO →*  ${new Date(regTime).toLocaleString()}
+*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=519738464568&text=.menu
 `.trim();
 
         const mentionedJid = [who];
