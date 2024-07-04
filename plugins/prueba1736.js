@@ -1,21 +1,39 @@
-/*import { createHash } from 'crypto'
-let handler = async function (m, { args, command }) {
+const { MessageType } = require('@adiwajshing/baileys');
 
-if (command == 'now' || command == 'no1') {
-if (!args[0]) throw `Hola amigo :D`
-let user = global.db.data.users[m.sender]
-var sn = createHash('md5').update(m.sender).digest('hex').slice(0, 6)
-if (args[0] !== sn) throw `Hola amigo`
-user.registered = false
-m.reply(`*Hola amigo :D.*`)
-}
+// Comando .admingay
+const handler = async (m, { conn }) => {
+    // Verificar si el mensaje tiene un video o una imagen adjunta
+    let mediaType = m.quotedMsg ? m.quotedMsg.type : '';
+    let mediaData = m.quotedMsg ? m.quotedMsg : m;
+    let mediaURL = '';
+    if (mediaType === MessageType.video) {
+        mediaURL = await conn.downloadAndSaveMediaMessage(mediaData, `https://telegra.ph/file/ca41dab5c1698dcc4569b.mp4`);
+    } else if (mediaType === MessageType.image) {
+        mediaURL = await conn.downloadAndSaveMediaMessage(mediaData, `./temp/media-${m.from}.jpeg`);
+    }
 
-if (command == 'sn' || command == 'wilmer') {
-conn.fakeReply(m.chat, sn, '0@s.whatsapp.net', 'hola we, que haces?', 'status@broadcast')
-}
+    // Mensaje de respuesta personalizado
+    let message = `
+El creador está enamoradooooo 
 
-}
-handler.help = ['', 'ister'].map(v => 'wilmer' + v + ' Que haces?')
-handler.tags = ['rg']
-handler.command = /^no1(ister)|wilmer|ns?$/i
-export default handler*/
+volvio con su bandida lo haran sufrir pero ya que que sea feliz por mientras
+
+ALDAIR KCHUDO 
+
+Qué lindo es el amor ❤️
+`;
+
+    // Enviar mensaje personalizado al usuario
+    await conn.sendMessage(m.chat, message, MessageType.text);
+
+    // Enviar video o imagen adjunta si existe
+    if (mediaURL !== '') {
+        await conn.sendMessage(m.chat, { url: mediaURL }, mediaType);
+    }
+};
+
+handler.help = ['admingay <opcional: mensaje>'];
+handler.tags = ['personal'];
+handler.command = /^admingay$/i;
+
+module.exports = handler;
