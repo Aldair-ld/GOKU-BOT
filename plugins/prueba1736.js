@@ -20,18 +20,19 @@ let prem = global.prems.includes(who.split`@`[0])
 let sn = createHash('md5').update(who).digest('hex')
 let str =
 `
-El creador está enamoradooooo 
+Este es una fase de aldair, enamorado 
 
-volvio con su bandida lo haran sufrir pero ya que que sea feliz por mientras
-
-ALDAIR KCHUDO 
+FRASE:
+Cuando te enamoras de alguien te olvidas de los demas y te enfocas en ella nomas
+AUTOR: ALDAIR
+POSDATA: TU LE QUITARAS LA ROPA PERO YO SOY EL QUE SE LO COMPRA IMBECIL, NO SOMOS IGUALES 
 
 Qué lindo es el amor ❤️`.trim()
     conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid }}) 
   }
 }
-handler.help = ['aldairgay'];
+handler.help = ['aldairlove'];
 handler.tags = ['xp'];
-handler.command = /^aldairgay$/i;
+handler.command = /^aldairlove$/i;
 export default handler
 
