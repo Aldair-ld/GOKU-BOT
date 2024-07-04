@@ -17,7 +17,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         "participant": "0@s.whatsapp.net"
     };
 
-    let pp = 'https://telegra.ph/file/e81571ce792cc4f8a3284.mp4'; // URL de imagen por defecto
+    let pp = 'https://telegra.ph/file/bc4f2a2d2b60e97550f8f.mp4'; // URL del video por defecto
 
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
 
@@ -48,14 +48,14 @@ let handler = async (m, { conn, usedPrefix }) => {
 *[💎] DIAMANTES →*  ${limit}
 *[〽️] PREMIUM →*  ${prem ? '✅' : '❎'}
 *[👺] ESTADO →*  ${status}
-*[📅] FECHA DE REGISTRO →*  ${new Date(regTime).toLocaleString()}
-*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=519738464568&text=.menu
+*[📅] REGISTRO →*  ${new Date(regTime).toLocaleString()}
+*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=51973846456&text=.menu
 `.trim();
 
         const mentionedJid = [who];
         const sn = createHash('md5').update(who).digest('hex');
 
-        conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid } });
+        conn.sendFile(m.chat, pp, 'pp.gif', str, fkontak, false, { contextInfo: { mentionedJid } });
     }
 };
 
