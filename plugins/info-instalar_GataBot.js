@@ -15,29 +15,7 @@ const fkontak = {
 }
 
 let picture = './media/menus/Menu1.jpg'
-let gata = `*Instalar* °♡✧*𝑭𝒂𝒏𝒕𝒂𝒔𝒚𝑩𝒐𝒕-𝑴𝑫*✧♡°
-
-*ೋ❀❀ೋ═══ • ═══ೋ❀❀ೋ*
- 𝙄𝙉𝙎𝙏𝘼𝙇𝘼𝙍 𝙀𝙉 𝙏𝙀𝙍𝙈𝙐𝙓
-ೋ❀❀ೋ═══ • ═══ೋ❀❀ೋ
-cd && termux-setup-storage
-
-apt-get update -y && apt-get upgrade -y
-
-pkg install -y git nodejs ffmpeg imagemagick && pkg install yarn 
-
-git clone https://github.com/Wilsmac/FantasyBot-MD-v1
-
-cd FantasyBot-MD-v1
-
-yarn install
-
-npm install
-
-npm update
-
-npm start 
-
+let gata = `
 *╔═════════❖•ೋ° °ೋ•❖═════════╗*
   𝑷𝑹𝑶́𝑿𝑰𝑴𝑨𝑴𝑬𝑵𝑻𝑬 𝑵𝑼𝑬𝑽𝑨𝑺 𝑰𝑵𝑺𝑻𝑨𝑳𝑨𝑪𝑰𝑶𝑵𝑬𝑺 
 *╚═════════❖•ೋ° °ೋ•❖═════════╝*
