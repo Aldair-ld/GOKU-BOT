@@ -1,84 +1,37 @@
-let handler = async (m, { conn, usedPrefix, command, text }) => {
+import { createHash } from 'crypto' 
+import PhoneNumber from 'awesome-phonenumber'
+import fetch from 'node-fetch'
+let handler = async (m, { conn, usedPrefix }) => {
+let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
+let pp = 'https://telegra.ph/file/bd4619a17afe7496d953b.jpg'
+//const pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => './src/avatar_contact.png')
+let user = global.db.data.users[m.sender]
+let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+try {
+pp = await conn.getProfilePicture(who)         //pp = await conn.getProfilePicture(who)
+} catch (e) {
 
-/*const messages = [
-[
-'Descripción 1', 
-'By Wilmer :b',
-'https://telegra.ph/file/b95059bd21a2bbbd0218b.jpg',
-[['Botón 1', 'id1'], ['Botón 2', 'id2']],
-'Texto para copiar 1',
-[['Enlace 1', 'https://example.com/link1'], ['Enlace 2', 'https://example.com/link2']],
-[
-[['Lista', 'Sección', 'Título', 'Tema', 'Descripción', 'Id']],
-[['Sección 1', 'Título 1', 'Tema 1', 'Descripción 1', 'Id 1']],
-[['Sección 2', 'Título 2', 'Tema 2', 'Descripción 2', 'Id 2']]
-]],
-[
-'Descripción 2',
-'By Wilmer :3',
-'https://telegra.ph/file/d57ee60a1674082040ad0.jpg',
-[['Botón 1', 'id1'], ['Botón 2', 'id2']],
-'Texto para copiar 2',
-[['Enlace 1', 'https://example.com/link1'], ['Enlace 2', 'https://example.com/link2']],
-[[
-'Lista', 
-'Sección ',  
-'Titulo',  
-'Tema',  
-'Descripcion', 
-'Id',
-]]]]*/
+} finally {
+let { name, limit, lastclaim, registered, regTime, age } = global.db.data.users[who]
+//let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let mentionedJid = [who]
+let username = conn.getName(who)
+let prem = global.prems.includes(who.split`@`[0])
+let sn = createHash('md5').update(who).digest('hex')
+let str =
+`
+Este es una fase de aldair, triste
 
-const sections = [{
-title: `Título de la sección`,
-rows: [
+Cuando se entere que lo engañaron y el no se daba cuenta 
 
-{ header: 'Encabezado1', title: "Título1", description: 'Descripción1', id: usedPrefix + "menu" }, 
+cayo en el refugio del alcohol 
 
-{ header: 'Encabezado2', title: "Título2", description: 'Descripción2', id: "Id2" }, 
-
-{ header: 'Encabezado3', title: "Título3", description: 'Descripción3', id: "Id3" }, 
-
-{ header: 'Encabezado4', title: "Título4", description: 'Descripción4', id: "Id4" }, 
-]},] 
-
-const messages = [[ 
-'Descripción', 
-'Footer',
-'https://telegra.ph/file/b95059bd21a2bbbd0218b.jpg',
-[['Botón1', usedPrefix + 'menu'], ['Botón2', 'Id2'] /* etc... */],
-[['Texto para copiar 1'], ['Texto para copiar 2'] /* etc... */],
-[['Enlace1', canalofc], ['Enlace2', 'https://example.com/link2'] /* etc... */],
-[['Botón Lista 1', sections], ['Botón Lista 2', sections] /* etc... */]
-], [
-'Descripción',
-'Footer',
-'https://telegra.ph/file/d57ee60a1674082040ad0.jpg',
-[['Botón1', 'Id1'], ['Botón2', 'Id2']],
-[['Texto para copiar 1'], ['Texto para copiar 2']],
-[['Enlace1', 'https://example.com/link1'], ['Enlace2', 'https://example.com/link2']],
-[['Botón Lista 1', sections], ['Botón Lista 2', sections]]
-], [
-'Descripción',
-'Footer',
-'https://telegra.ph/file/b95059bd21a2bbbd0218b.jpg',
-[['Botón1', 'Id1'], ['Botón2', 'Id2']],
-[['Texto para copiar 1'], ['Texto para copiar 2']],
-[['Enlace1', 'https://example.com/link1'], ['Enlace2', 'https://example.com/link2']],
-[['Botón Lista 1', sections], ['Botón Lista 2', sections]]
-], [
-'Descripción',
-'Footer',
-'https://telegra.ph/file/d57ee60a1674082040ad0.jpg',
-[['Botón1', 'Id1'], ['Botón2', 'Id2']],
-[['Texto para copiar 1'], ['Texto para copiar 2']],
-[['Enlace1', 'https://example.com/link1'], ['Enlace2', 'https://example.com/link2']],
-[['Botón Lista 1', sections], ['Botón Lista 2', sections]]
-]]
-
-await conn.sendNatsukisel(m.chat, 'Texto', 'Linea', 'TXT', messages, m)
-
+#fuerzasaldair
+`.trim()
+    conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid }}) 
+  }
 }
-
-handler.command = /^(lph)$/i
+handler.help = ['aldairsad'];
+handler.tags = ['xp'];
+handler.command = /^aldairsad$/i;
 export default handler
