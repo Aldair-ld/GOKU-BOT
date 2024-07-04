@@ -1,88 +1,33 @@
-let handler  = async (m, { conn, usedPrefix: _p }) => {
+import { createHash } from 'crypto' 
+import PhoneNumber from 'awesome-phonenumber'
+import fetch from 'node-fetch'
+let handler = async (m, { conn, usedPrefix }) => {
+let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
+let pp = 'https://telegra.ph/file/13aa71ea41b42fee3f516.mp4'
+//const pp = await conn.profilePictureUrl(conn.user.jid).catch(_ => './src/avatar_contact.png')
+let user = global.db.data.users[m.sender]
+let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+try {
+pp = await conn.getProfilePicture(who)         //pp = await conn.getProfilePicture(who)
+} catch (e) {
 
-let troli = { key: { fromMe: false, participant: "0@s.whatsapp.net", ...(false ? { remoteJid: "17608914335@s.whatsapp.net" } : {}) }, message: { productMessage: { product: { productImage:{ "mimetype": "image/jpeg", jpegThumbnail: imagen1 }, title: `${wm}`, description: "NatsukiBot-GD", currencyCode: "USD", priceAmount1000: "200000000", retailerId: "Ghost", productImageCount: 1 }, businessOwnerJid: "0@s.whatsapp.net" }}}
+} finally {
+let { name, limit, lastclaim, registered, regTime, age } = global.db.data.users[who]
+//let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let mentionedJid = [who]
+let username = conn.getName(who)
+let prem = global.prems.includes(who.split`@`[0])
+let sn = createHash('md5').update(who).digest('hex')
+let str =
+`
+SIMPLEMENTE AHI UN EMOJI QUE LO DESCRIBE AHORITA 
 
-/*let troli = { key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" }, message: { imageMessage: { mimetype: 'image/jpeg', caption: wm, jpegThumbnail: imagen1 }}}
-*/
-/*let troli = {key: {participant: "0@s.whatsapp.net", "remoteJid": "0@s.whatsapp.net"}, "message": {"groupInviteMessage": {"groupJid": "51995386439-1616969743@g.us", "inviteCode": "m", "groupName": "P", "caption": wm, 'jpegThumbnail': fs.readFileSync('./media/menus/Menu3.jpg')}}}*/
-
-conn.sendMessage(m.chat, {text:wm}, {quoted: troli})
+🏳️‍🌈🏳️‍🌈
+`.trim()
+    conn.sendFile(m.chat, pp, 'pp.jpg', str, fkontak, false, { contextInfo: { mentionedJid }}) 
+  }
 }
-handler.command = /^troli$/i
-
+handler.help = ['aldairgay'];
+handler.tags = ['xp'];
+handler.command = /^aldairgay$/i;
 export default handler
-
-/*import fs from 'fs'
-import fetch from 'node-fetch'
- let handler  = async (m, { conn, usedPrefix: _p }) => {
-const {
-    MessageType,
-    Mimetype
-} = (await import("@whiskeysockets/baileys")).default;
-           const ftrol = {
-  key : {
-                          participant : '0@s.whatsapp.net'
-                        },
-       message: {
-                    orderMessage: {
-                            itemCount : 999,
-                            status: 1,
-                            surface : 1,
-                            message: `okto\n5 Menit`, // Wilmer :3
-                            orderTitle: `Hola dkqbisbjd\n5 Menit`,
-                            jpegThumbnail: fs.readFileSync('./media/menus/Menu1.jpg'),
-                            sellerJid: '0@s.whatsapp.net' 
-                          }
-                        }
-                      }
-          //m.reply(teks)
-          let jawab = `*Natsuki*\n5 Menit\n\n_©okto_`.trim()
-conn.sendMessage(m.chat,{text:wm}, {quoted: ftrol})
-}
-
-
-handler.help = ['troli']
-
-handler.tags = ['ᴘᴇɴᴅɪɴɢ sᴛᴜғғ']
-
-handler.command = /^troli$/i
-
-export default handler*/
-
-
-/*import fs from 'fs'
-import fetch from 'node-fetch'
- let handler  = async (m, { conn, usedPrefix: _p }) => {
-const {
-    MessageType,
-    Mimetype
-} = (await import("@whiskeysockets/baileys")).default;
-
-           const ftrol = {
-  key : {
-                          participant : '0@s.whatsapp.net'
-                        },
-       message: {
-                    orderMessage: {
-                            itemCount : 999,
-                            status: 1,
-                            surface : 1,
-                            message: `HELLO WORLD :3\n5 Menit`, 
-                            orderTitle: `WILMER OFICIAL\n5 Menit`,
-                            thumbnail: pp,
-                            sellerJid: '0@s.whatsapp.net' 
-                          }
-                        }
-                      }
-          //m.reply(teks)
-          let jawab = `*Bot aktif selama*\n5 Menit\n\n_©ᴋɪɴɢ ᴏғ ʙᴇᴀʀ_`.trim()
-conn.sendMessage(m.chat,{text:wm}, {quoted: ftrol})
-}
-
-
-handler.help = ['troli']
-
-handler.tags = ['ᴘᴇɴᴅɪɴɢ sᴛᴜғғ']
-
-handler.command = /^troli$/i
-export default handler*/
