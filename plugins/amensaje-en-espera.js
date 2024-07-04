@@ -1,36 +1,24 @@
-import { readdirSync, unlinkSync, existsSync, promises as fs, rmSync } from 'fs';
-import path from 'path';
+let handler = async (m, { conn }) => {
+    if (m.action === 'add' && m.participants.includes(conn.user.jid)) {
+        let pp = 'https://telegra.ph/file/53f2e7e5fd7cd30d37b91.mp4'; // URL del video de bienvenida por defecto
 
-const handler = async (m, { conn, usedPrefix }) => {
-  if (global.conn.user.jid !== conn.user.jid) {
-    return conn.sendMessage(m.chat, {text: '*[✨] Utiliza este comando directamente en el número principal del Bot*'}, {quoted: m});
-  }
-  const chatId = m.isGroup ? [m.chat, m.sender] : [m.sender];
-  const sessionPath = './NatsukiSessions/';
-  try {
-    const files = await fs.readdir(sessionPath);
-    let filesDeleted = 0;
-    for (const file of files) {
-      for (const id of chatId) {
-        if (file.includes(id.split('@')[0])) {
-          await fs.unlink(path.join(sessionPath, file));
-          filesDeleted++;
-          break;
+        // Intentar obtener la foto de perfil del nuevo miembro
+        try {
+            pp = await conn.getProfilePicture(m.participants[0]);
+        } catch (e) {
+            // Error al obtener la foto de perfil, usar la predeterminada
         }
-      }
+
+        let participant = m.participants[0];
+        let str = `¡Bienvenido/a @${participant.split('@')[0]}! 🎉
+
+Nos alegra tenerte en nuestro grupo. Por favor, lee las reglas del grupo y disfruta de tu estancia.`;
+
+        await conn.sendFile(m.id, pp, 'welcome.mp4', str, null, { mentions: [participant] });
     }
-    if (filesDeleted === 0) {
-      await conn.sendMessage(m.chat, {text: '*[✨] No se encontró ningún archivo que incluya la ID del chat*'}, {quoted: m});
-    } else {
-      await conn.sendMessage(m.chat, {text: `*¸.☆¸.♡.¸*\n*Se eliminaron ${filesDeleted} archivos de sesión*`}, {quoted: m});
-    }
-  } catch (err) {
-    console.error('Error al leer la carpeta o los archivos de sesión:', err);
-    await conn.sendMessage(m.chat, {text: '*[🌺] Ocurrió un error al eliminar los archivos de sesión*'}, {quoted: m});
-  }
-  await conn.sendMessage(m.chat, {text: `*¡Hola! ¿Ahora puedes ver mis mensajes?*\n\n*¸.☆¸.♡.¸ ~_Si el Bot no le responde a sus comandos haga un pequeño spam_~*\n\n*⇴ Ejemplo:*\n${usedPrefix}s\n${usedPrefix}s\n${usedPrefix}s`}, {quoted: m});
 };
-handler.help = ['fixmsgespera'];
-handler.tags = ['fix'];
-handler.command = /^(fixmsgespera|ds)$/i;
+
+handler.group = true; // Este handler se ejecuta solo en grupos
+handler.event = 'group-participants-update'; // Este handler se ejecuta cuando hay un cambio en los participantes del grupo
+
 export default handler;
