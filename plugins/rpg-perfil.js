@@ -17,7 +17,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         "participant": "0@s.whatsapp.net"
     };
 
-    let pp = 'https://telegra.ph/file/bc4f2a2d2b60e97550f8f.mp4'; // URL del video por defecto
+    let pp = 'https://telegra.ph/file/53f2e7e5fd7cd30d37b91.mp4'; // URL del video por defecto
 
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
 
@@ -48,7 +48,6 @@ let handler = async (m, { conn, usedPrefix }) => {
 *[💎] DIAMANTES →*  ${limit}
 *[〽️] PREMIUM →*  ${prem ? '✅' : '❎'}
 *[👺] ESTADO →*  ${status}
-*[📅] REGISTRO →*  ${new Date(regTime).toLocaleString()}
 *[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=51973846456&text=.menu
 `.trim();
 
