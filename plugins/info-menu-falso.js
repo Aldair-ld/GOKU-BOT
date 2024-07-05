@@ -132,6 +132,8 @@ let menu = `╭──────༺♡༻──────╮
 
 ╰──────༺♡༻──────╯
 
+.inicio  para dar inicio al bot 
+
 ╭──────༺♡༻──────╮
      ✨INFO SOBRE EL BOT✨
 
