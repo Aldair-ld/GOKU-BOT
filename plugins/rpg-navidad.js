@@ -48,8 +48,8 @@ const generateReferralLink = (userId) => {
     return `https://api.whatsapp.com/send/?phone=${userId.split('@')[0]}&text=.menu`;
 };
 
-handler.help = ['start'];
+handler.help = ['inicio'];
 handler.tags = ['general'];
-handler.command = /^start$/i;
+handler.command = /^inicio$/i;
 
 export default handler;
