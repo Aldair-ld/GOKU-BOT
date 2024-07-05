@@ -83,16 +83,27 @@ const horarioFecha = lugarFecha.format('dddd, DD [de] MMMM [del] YYYY || HH:mm A
 if (!/web|desktop|unknown/gi.test(dispositivo)) {  
 let menu = `
 
-*BIENVENIDO A *𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
+*•··············•𓊈 URABE_MIKOTO 𓊉•·············•*
+
+⚡ Bienvenido al Menu Principal de comandos ⚡
+
 
 
  ᴇᴄᴏɴᴏᴍɪ́ᴀ ꙰
 \`Experiencia:\` ${exp} ⚡
 \`Diamantes:\` ${limit} 💎
-\`GokuCoins:\` ${money} 💵
+\`Coins:\` ${money} 💵
 \`Tokens:\` ${joincount} 🪙
 
-*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*`.trim()
+
+📌 Nuestros comandos se encuentran divididos en secciones para facilitar la interaccion del usuario.
+
+⬇️ Selecciona una sección para visualizar los comandos ⬇️
+
+*SE AGREGARAN MAS COMANDOS A LA LISTA*
+
+*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
+•···························•····························•`.trim()
 
 const buttonParamsJson = JSON.stringify({
 title: lenguajeCD['smsListaMenu'](),
@@ -115,8 +126,7 @@ const interactiveMessage = {
 body: { text: menu },
 footer: { text: fantasy + ` \n` },
 header: { title: `
-     ╰ᴍᴇɴᴜ́:\n*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
- ┈──❊:::::::¨¨*:::::::❊──┈\n_${global.saludo}_`, subtitle: "test4", hasMediaAttachment: false },
+     ╰ᴍᴇɴᴜ́:`, subtitle: "test4", hasMediaAttachment: false },
 nativeFlowMessage: { buttons: [{ 
 name: "single_select",
 buttonParamsJson
