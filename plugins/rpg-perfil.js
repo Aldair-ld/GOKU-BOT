@@ -21,16 +21,23 @@ let handler = async (m, { conn, usedPrefix }) => {
 
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
 
+    // Verifica si el usuario está registrado
+    let user = global.db.data.users[who];
+    if (!user || !user.registered) {
+        // Si no está registrado, envía un mensaje y termina la ejecución
+        conn.reply(m.chat, 'Debes registrarte primero usando el comando .registrar.', fkontak);
+        return;
+    }
+
     try {
         pp = await conn.getProfilePicture(who); // Obtener foto de perfil del usuario
     } catch (e) {
         // Error al obtener la foto de perfil
     } finally {
-        let user = global.db.data.users[who];
         let { name, limit, registered, regTime, age } = user;
 
         // Generar el enlace de referido único para el usuario
-        const referralLink = generateReferralLink(who); // Debes implementar esta función
+        const referralLink = generateReferralLink(who);
 
         let prem = global.prems.includes(who.split`@`[0]);
         let status = user.banned ? 'BANEADO' : 'LIBRE';
