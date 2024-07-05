@@ -25,7 +25,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     let user = global.db.data.users[who];
     if (!user || !user.registered) {
         // Si no está registrado, envía un mensaje y termina la ejecución
-        conn.reply(m.chat, 'Debes registrarte primero usando el comando .registrar.', fkontak);
+        conn.reply(m.chat, 'Debes registrarte primero usando el comando .reg nombre.edad', fkontak);
         return;
     }
 
