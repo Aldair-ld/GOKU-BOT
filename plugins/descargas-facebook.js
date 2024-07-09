@@ -8,12 +8,12 @@ var handler = async (m, { conn, text }) => {
   };
 
   let user = global.db.data.users[m.sender];
-  let time = user.prue + 5000; // 5 seg
+  let time = user.prue + 10000; // 10 segundos
 
-  if (new Date() - user.prue < 90000) 
-    return await conn.reply(m.chat, `ESPERA UNOS MINUTOS PARA USAR OTRO COMANDO NO HAGA SPAM`, fkontak, m);
+  if (new Date() - user.prue < 10000) 
+    return await conn.reply(m.chat, `ESPERA 10 SEGUNDOS PARA USAR OTRO COMANDO NO HAGA SPAM`, fkontak, m);
 
-  if (!text) throw `INGRESE UN NÚMERO DE RUC PARA CONSULTAR`;
+  if (!text) throw `INGRESE UN NÚMERO DE RUC PARA CONSULTAR\n\n EJEMPLO: .ruc 20225116459`;
 
   let ruc = text.trim();
   let start = `*🔍 ¡Empezando búsqueda del RUC proporcionado! 🔍*`;
@@ -31,9 +31,34 @@ var handler = async (m, { conn, text }) => {
     let data = await response.json();
 
     if (response.status === 200) {
-      let { ruc, razonSocial, direccion } = data.data;
+      let {
+        razon_social,
+        condicion,
+        nombre_comercial,
+        tipo,
+        fecha_inscripcion,
+        estado,
+        direccion,
+        sistema_emision,
+        actividad_exterior,
+        sistema_contabilidad,
+        fecha_emision_electronica,
+        fecha_ple,
+        departamento,
+        provincia,
+        distrito,
+        representante_legal
+      } = data.data;
 
-      let rucInfo = `*_Información del RUC obtenida con éxito_*\n\n*RUC:* ${ruc}\n*Razón Social:* ${razonSocial}\n*Dirección:* ${direccion}`;
+      let {
+        tipo_documento,
+        numero_documento,
+        nombres,
+        cargo,
+        desde
+      } = representante_legal;
+
+      let rucInfo = `*_Información del RUC obtenida con éxito_*\n\n*RUC:* ${ruc}\n*Razón Social:* ${razon_social}\n*Condición:* ${condicion}\n*Nombre Comercial:* ${nombre_comercial}\n*Tipo:* ${tipo}\n*Fecha de Inscripción:* ${fecha_inscripcion}\n*Estado:* ${estado}\n*Dirección:* ${direccion}\n*Sistema de Emisión:* ${sistema_emision}\n*Actividad Exterior:* ${actividad_exterior}\n*Sistema de Contabilidad:* ${sistema_contabilidad}\n*Fecha de Emisión Electrónica:* ${fecha_emision_electronica}\n*Fecha PLE:* ${fecha_ple}\n*Departamento:* ${departamento}\n*Provincia:* ${provincia}\n*Distrito:* ${distrito}\n\n*Representante Legal*\n*Tipo de Documento:* ${tipo_documento}\n*Número de Documento:* ${numero_documento}\n*Nombres:* ${nombres}\n*Cargo:* ${cargo}\n*Desde:* ${desde}`;
 
       await conn.sendMessage(m.chat, { text: rucInfo }, { quoted: m });
     } else {
