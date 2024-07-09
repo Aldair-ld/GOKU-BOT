@@ -50,15 +50,11 @@ var handler = async (m, { conn, text }) => {
         representante_legal
       } = data.data;
 
-      let {
-        tipo_documento,
-        numero_documento,
-        nombres,
-        cargo,
-        desde
-      } = representante_legal;
+      let representanteInfo = representante_legal ? `
+*Representante Legal*\n*Tipo de Documento:* ${representante_legal.tipo_documento || 'N/A'}\n*Número de Documento:* ${representante_legal.numero_documento || 'N/A'}\n*Nombres:* ${representante_legal.nombres || 'N/A'}\n*Cargo:* ${representante_legal.cargo || 'N/A'}\n*Desde:* ${representante_legal.desde || 'N/A'}
+      ` : '*No hay información del representante legal.*';
 
-      let rucInfo = `*_Información del RUC obtenida con éxito_*\n\n*RUC:* ${ruc}\n*Razón Social:* ${razon_social}\n*Condición:* ${condicion}\n*Nombre Comercial:* ${nombre_comercial}\n*Tipo:* ${tipo}\n*Fecha de Inscripción:* ${fecha_inscripcion}\n*Estado:* ${estado}\n*Dirección:* ${direccion}\n*Sistema de Emisión:* ${sistema_emision}\n*Actividad Exterior:* ${actividad_exterior}\n*Sistema de Contabilidad:* ${sistema_contabilidad}\n*Fecha de Emisión Electrónica:* ${fecha_emision_electronica}\n*Fecha PLE:* ${fecha_ple}\n*Departamento:* ${departamento}\n*Provincia:* ${provincia}\n*Distrito:* ${distrito}\n\n*Representante Legal*\n*Tipo de Documento:* ${tipo_documento}\n*Número de Documento:* ${numero_documento}\n*Nombres:* ${nombres}\n*Cargo:* ${cargo}\n*Desde:* ${desde}`;
+      let rucInfo = `*_Información del RUC obtenida con éxito_*\n\n*RUC:* ${ruc}\n*Razón Social:* ${razon_social}\n*Condición:* ${condicion}\n*Nombre Comercial:* ${nombre_comercial}\n*Tipo:* ${tipo}\n*Fecha de Inscripción:* ${fecha_inscripcion}\n*Estado:* ${estado}\n*Dirección:* ${direccion}\n*Sistema de Emisión:* ${sistema_emision}\n*Actividad Exterior:* ${actividad_exterior}\n*Sistema de Contabilidad:* ${sistema_contabilidad}\n*Fecha de Emisión Electrónica:* ${fecha_emision_electronica}\n*Fecha PLE:* ${fecha_ple}\n*Departamento:* ${departamento}\n*Provincia:* ${provincia}\n*Distrito:* ${distrito}\n\n${representanteInfo}`;
 
       await conn.sendMessage(m.chat, { text: rucInfo }, { quoted: m });
     } else {
@@ -85,3 +81,5 @@ function pickRandom(list) {
 
 // Función auxiliar para retrasar la ejecución
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
