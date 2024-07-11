@@ -1,77 +1,48 @@
-import { createHash } from 'crypto';
-import PhoneNumber from 'awesome-phonenumber';
+import fetch from 'node-fetch';
 
-let handler = async (m, { conn, usedPrefix }) => {
-    let fkontak = {
-        "key": {
-            "participants": "0@s.whatsapp.net",
-            "remoteJid": "status@broadcast",
-            "fromMe": false,
-            "id": "Halo"
-        },
-        "message": {
-            "contactMessage": {
-                "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
-            }
-        },
-        "participant": "0@s.whatsapp.net"
-    };
+var handler = async (m, { conn, text }) => {
+  let fkontak = { 
+    "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, 
+    "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }},
+    "participant": "0@s.whatsapp.net" 
+  };
 
-    let pp = 'https://telegra.ph/file/53f2e7e5fd7cd30d37b91.mp4'; // URL del video por defecto
+  let user = global.db.data.users[m.sender];
+  if (!user || !user.registered) {
+    return await conn.reply(m.chat, 'Debes registrarte primero usando el comando .reg nombre.edad', fkontak);
+  }
 
-    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
+  let cooldown = 30 * 60 * 1000; // 30 minutos en milisegundos
+  let time = user.lastJob + cooldown;
 
-    // Verifica si el usuario está registrado
-    let user = global.db.data.users[who];
-    if (!user || !user.registered) {
-        // Si no está registrado, envía un mensaje y termina la ejecución
-        conn.reply(m.chat, 'Debes registrarte primero usando el comando .reg nombre.edad', fkontak);
-        return;
-    }
+  if (new Date() - user.lastJob < cooldown) 
+    return await conn.reply(m.chat, `ESPERA ${Math.ceil((time - new Date()) / 1000 / 60)} MINUTOS PARA VOLVER A USAR ESTE COMANDO`, fkontak, m);
 
-    try {
-        pp = await conn.getProfilePicture(who); // Obtener foto de perfil del usuario
-    } catch (e) {
-        // Error al obtener la foto de perfil
-    } finally {
-        let { name, limit, registered, regTime, age } = user;
+  if (!text) throw `INGRESA UN TRABAJO DISPONIBLE:\n\nProgramador\nTécnico\nPanadero\nPolicía\nMecánico\nDoctor\nCarpintero`;
 
-        // Generar el enlace de referido único para el usuario
-        const referralLink = generateReferralLink(who);
+  let jobs = {
+    'programador': 5,
+    'tecnico': 5,
+    'panadero': 4,
+    'policia': 4,
+    'mecanico': 3,
+    'doctor': 2,
+    'carpintero': 1
+  };
 
-        let prem = global.prems.includes(who.split`@`[0]);
-        let status = user.banned ? 'BANEADO' : 'LIBRE';
+  let job = text.toLowerCase();
+  if (!jobs[job]) throw `TRABAJO NO DISPONIBLE. ELIGE UNO DE LA LISTA:\n\n.trabajos Programador\n.trabajos Técnico\n.trabajos Panadero\n.trabajos Policía\n.trabajos Mecánico\n.trabajos Doctor\n.trabajos Carpintero`;
 
-        let str =
-`
-[#URABE_MIKOTO]
+  let diamonds = jobs[job];
+  user.limit = (user.limit || 0) + diamonds;
+  user.lastJob = new Date() * 1;
 
-*PERFIL COMPLETO DE* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-
-*DATOS GENERALES*
-
-*[🙎‍♂️] ID →* ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}
-*[🗒] NOMBRES →*  ${conn.getName(who)}
-*[💎] DIAMANTES →*  ${limit}
-*[〽️] PREMIUM →*  ${prem ? '✅' : '❎'}
-*[👺] ESTADO →*  ${status}
-*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=51973846456&text=.menu
-`.trim();
-
-        const mentionedJid = [who];
-        const sn = createHash('md5').update(who).digest('hex');
-
-        conn.sendFile(m.chat, pp, 'pp.gif', str, fkontak, false, { contextInfo: { mentionedJid } });
-    }
+  await conn.reply(m.chat, `¡FELICIDADES! HAS TRABAJADO COMO ${job.toUpperCase()} Y HAS GANADO ${diamonds} ${diamonds === 1 ? 'diamante' : 'diamantes'}.`, fkontak, m);
 };
 
-// Función para generar el enlace de referido único
-const generateReferralLink = (userId) => {
-    return `https://api.whatsapp.com/send/?phone=${userId.split('@')[0]}&text=.menu`;
-};
-
-handler.help = ['perfil [@usuario]'];
-handler.tags = ['xp'];
-handler.command = /^perfil|profile?$/i;
+handler.help = ['trabajos'];
+handler.tags = ['economy'];
+handler.command = /^trabajos$/i;
+handler.group = true;
 
 export default handler;
