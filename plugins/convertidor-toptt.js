@@ -1,17 +1,42 @@
-import { toPTT } from '../lib/converter.js'
-let handler = async (m, { conn, usedPrefix, command }) => {
-let q = m.quoted ? m.quoted : m
-let mime = (m.quoted ? m.quoted : m.msg).mimetype || ''
-if (!/video|audio/.test(mime)) throw `${lenguajeGB['smsAvisoMG']()}${mid.smsconvert7}`
-let media = await q.download?.()
-if (!media && !/video/.test(mime)) throw `${lenguajeGB['smsAvisoFG']()}${mid.smsconvert8}`
-if (!media && !/audio/.test(mime)) throw `${lenguajeGB['smsAvisoFG']()}${mid.smsconvert8}`
-let audio = await toPTT(media, 'mp4')
-if (!audio.data && !/audio/.test(mime)) throw `${lenguajeGB['smsAvisoFG']()}${mid.smsconvert9}`
-if (!audio.data && !/video/.test(mime)) throw `${lenguajeGB['smsAvisoFG']()}${mid.smsconvert9}`
-conn.sendFile(m.chat, audio.data, 'error.mp3', '', m, true, { mimetype: 'audio/mp4' })
-}
-handler.help = ['tovn (reply)']
-handler.tags = ['audio']
-handler.command = /^tovn|vn|ptt$/i
-export default handler
+import { createHash } from 'crypto';
+import PhoneNumber from 'awesome-phonenumber';
+
+let handler = async (m, { conn, usedPrefix }) => {
+    let fkontak = {
+        "key": {
+            "participants": "0@s.whatsapp.net",
+            "remoteJid": "status@broadcast",
+            "fromMe": false,
+            "id": "Halo"
+        },
+        "message": {
+            "contactMessage": {
+                "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
+            }
+        },
+        "participant": "0@s.whatsapp.net"
+    };
+
+    let users = Object.entries(global.db.data.users)
+        .filter(([_, user]) => user.registered) // Filtra solo los usuarios registrados
+        .sort(([, a], [, b]) => b.limit - a.limit) // Ordena por diamantes en orden descendente
+        .slice(0, 10); // Toma los 10 usuarios con más diamantes
+
+    if (users.length === 0) {
+        conn.reply(m.chat, 'No hay usuarios registrados.', fkontak);
+        return;
+    }
+
+    let str = '*Usuarios con más diamantes*\n\n';
+    users.forEach(([jid, user], index) => {
+        str += `${index + 1}) ${conn.getName(jid)} - ${user.limit} diamantes - ${PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')}\n`;
+    });
+
+    conn.reply(m.chat, str, fkontak);
+};
+
+handler.help = ['topdiamantes'];
+handler.tags = ['xp'];
+handler.command = /^topdiamantes$/i;
+
+export default handler;
