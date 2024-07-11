@@ -27,7 +27,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         return;
     }
 
-    let str = '*Usuarios con más diamantes*\n\n';
+    let str = '*TOP DE DIAMANTES*\n\n';
     users.forEach(([jid, user], index) => {
         str += `${index + 1}) ${conn.getName(jid)} - ${user.limit} 💎 - ${PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')}\n`;
     });
