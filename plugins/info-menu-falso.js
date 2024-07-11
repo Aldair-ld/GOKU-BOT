@@ -44,6 +44,9 @@ setTimeout(resolve, 1000)
 }
 let { money, joincount } = global.db.data.users[m.sender]
 let user = global.db.data.users[m.sender]
+if (!user || !user.registered) {
+  return await conn.reply(m.chat, 'Debes registrarte usa el comando  .inicio  para saber como registrarte', { quoted: m })
+}
 let muptime = clockString(_muptime)
 let uptime = clockString(_uptime)
 let picture = './media/menus/Menu1.jpg'
