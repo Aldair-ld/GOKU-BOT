@@ -5,11 +5,11 @@ let handler = async (m, { conn }) => {
     "participant": "0@s.whatsapp.net" 
   };
 
-  let contactInfo = `*📞 Información de Contacto del Soporte*\n\n` +
-                    `*Nombre:* Soporte Bot\n` +
+  let contactInfo = `*📞 Información de mi Creador*\n\n` +
+                    `*Nombre:* Aldair\n` +
                     `*Número:* +51 925 015 528\n` +
                     `*Horario de Atención:* 10:00 AM - 11:59 PM (Hora Local)\n\n` +
-                    `Para cualquier consulta o soporte técnico, por favor contacta al número proporcionado.`;
+                    `Para cualquier consulta, por favor contacta al número proporcionado.`;
 
   await conn.reply(m.chat, contactInfo, fkontak, m);
 };
