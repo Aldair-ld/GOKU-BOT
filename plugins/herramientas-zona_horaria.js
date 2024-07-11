@@ -8,10 +8,10 @@ var handler = async (m, { conn, text }) => {
   };
 
   let user = global.db.data.users[m.sender];
-  let time = user.prue + 5000; // 1 min
+  let time = user.prue + 10000; // 10 segundos
 
-  if (new Date() - user.prue < 90000) 
-    return await conn.reply(m.chat, `ESPERA UNOS MINUTOS PARA USAR OTRO COMANDO NO HAGA SPAM`, fkontak, m);
+  if (new Date() - user.prue < 10000) 
+    return await conn.reply(m.chat, `ESPERA UNOS SEGUNDOS PARA USAR OTRO COMANDO NO HAGA SPAM`, fkontak, m);
 
   if (!text) throw `INGRESE EL NOMBRE DE UNA CIUDAD O PAIS PARA CONSULTAR EL CLIMA`;
 
