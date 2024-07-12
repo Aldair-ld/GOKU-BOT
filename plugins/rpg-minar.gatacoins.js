@@ -1,154 +1,134 @@
-let handler = async (m, { conn, isPrems}) => { //lastmiming
-const _0x44713f = _0x34b6;
-function _0x34b6(_0x355db8, _0x38a593) {
-    const _0x400972 = _0x5695();
-    return _0x34b6 = function (_0x16a5bb, _0x27e0c3) {
-        _0x16a5bb = _0x16a5bb - (0x1 * 0x12fa + -0x12dc + -0x16 * -0xb);
-        let _0x5e2a77 = _0x400972[_0x16a5bb];
-        return _0x5e2a77;
-    }, _0x34b6(_0x355db8, _0x38a593);
-}
-function _0x5695() {
-    const _0x4cecf4 = [
-        '10QkaAWA',
-        '50166towazJ',
-        'split',
-        '7930580BDnYXG',
-        '16rFbvUv',
-        ',;;;\x0aFN:',
-        ',\x0aitem1.TEL;waid=',
-        '1528180FrsxKo',
-        'sender',
-        '855510JLyYbE',
-        './media/menus/Menu1.jpg',
-        '2370321JHDFol',
-        '2784531yQdyIG',
-        'readFileSync',
-        '46058790kkljpF',
-        '25WXxsFt',
-        '\x0aitem1.X-ABLabell:Ponsel\x0aEND:VCARD'
-    ];
-    _0x5695 = function () {
-        return _0x4cecf4;
-    };
-    return _0x5695();
-}
-(function (_0x4d3b1a, _0x58b11c) {
-    const _0x423612 = _0x34b6, _0x34f90f = _0x4d3b1a();
-    while (!![]) {
-        try {
-            const _0x37ec1c = parseInt(_0x423612(0x111)) / (-0x1e * 0x11a + 0x2 * -0x4e4 + -0x891 * -0x5) * (-parseInt(_0x423612(0x112)) / (0x6b6 + 0x6a9 + -0xd5d)) + -parseInt(_0x423612(0x11d)) / (0x1ee + 0x255e + -0x2749) + -parseInt(_0x423612(0x118)) / (0x1 * 0x219d + -0x1156 + 0x17 * -0xb5) + parseInt(_0x423612(0x120)) / (-0x14a9 + -0x1 * -0xb5d + 0x3 * 0x31b) * (-parseInt(_0x423612(0x11a)) / (0x1e * 0x47 + 0x1588 + -0x1dd4)) + -parseInt(_0x423612(0x114)) / (-0x1c9c + 0x8a9 + 0x13fa) + parseInt(_0x423612(0x115)) / (0x12d * -0x1d + -0x257d + 0xb2 * 0x67) * (-parseInt(_0x423612(0x11c)) / (0x222 * 0x3 + -0x3af * -0x1 + -0x1 * 0xa0c)) + parseInt(_0x423612(0x11f)) / (0x89f * -0x1 + -0x15 * -0x81 + 0xf6 * -0x2);
-            if (_0x37ec1c === _0x58b11c)
-                break;
-            else
-                _0x34f90f['push'](_0x34f90f['shift']());
-        } catch (_0x47fdc1) {
-            _0x34f90f['push'](_0x34f90f['shift']());
-        }
-    }
-}(_0x5695, 0xf371d + -0x1 * -0x6f85a + -0xbed97));
-let fkontak2 = {
-    'key': { 'participant': '0@s.whatsapp.net' },
-    'message': {
-        'contactMessage': {
-            'displayName': wilmerofc,
-            'vcard': 'BEGIN:VCARD\x0aVERSION:3.0\x0aN:XL;' + author + _0x44713f(0x116) + author + _0x44713f(0x117) + m[_0x44713f(0x119)][_0x44713f(0x113)]('@')[-0x1484 * 0x1 + -0x666 + 0x1aea] + ':' + m['sender'][_0x44713f(0x113)]('@')[-0x162a + 0x546 + 0x10e4] + _0x44713f(0x110),
-            'jpegThumbnail': fs[_0x44713f(0x11e)](_0x44713f(0x11b)),
-            'thumbnail': fs['readFileSync']('./media/menus/Menu1.jpg'),
-            'sendEphemeral': !![]
-        }
-    }
-};
-const fkontak = {
-        "key": {
-        "participants":"0@s.whatsapp.net",
-            "remoteJid": "status@broadcast",
-            "fromMe": false,
-            "id": "Halo"    
-        },
-        "message": {
-            "contactMessage": {
-                "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
+import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
+
+let games = {}
+
+let handler = async (m, { conn, args, usedPrefix }) => {
+    const width = 5
+    const height = 5
+    const mineCount = 5
+
+    const generateBoard = (width, height, mineCount) => {
+        const board = Array.from({ length: height }, () => Array(width).fill(0))
+        let minesPlaced = 0
+
+        while (minesPlaced < mineCount) {
+            const x = Math.floor(Math.random() * width)
+            const y = Math.floor(Math.random() * height)
+
+            if (board[y][x] === 0) {
+                board[y][x] = '💣'
+                minesPlaced++
+
+                for (let dx = -1; dx <= 1; dx++) {
+                    for (let dy = -1; dy <= 1; dy++) {
+                        if (x + dx >= 0 && x + dx < width && y + dy >= 0 && y + dy < height && board[y + dy][x + dx] !== '💣') {
+                            board[y + dy][x + dx]++
+                        }
+                    }
+                }
             }
-        },
-        "participant": "0@s.whatsapp.net"
+        }
+
+        return board
     }
 
-let user = global.db.data.users[m.sender]
-let premium = user.premium  
-let minar = `${pickRandom(['Que pro 😎 has minado',
-'🌟✨ Genial!! Obtienes',
-'WOW!! eres un(a) gran Minero(a) ⛏️ Obtienes',
-'Has Minado!!',
-'😲 Lograste Minar la cantidad de',
-'Tus Ingresos subiran gracias a que minaste',
-'⛏️⛏️⛏️⛏️⛏️ Minando',
-'🤩 SII!!! AHORA TIENES',
-'La minaria esta de tu lado, por ello obtienes',
-'😻 La suerte de Minar',
-'♻️ Tu Mision se ha cumplido, lograste minar',
-'⛏️ La Mineria te ha beneficiado con',
-'🛣️ Has encontrado un Lugar y por minar dicho lugar Obtienes',
-'👾 Gracias a que has minado tus ingresos suman',
-'Felicidades!! Ahora tienes','⛏️⛏️⛏️ Obtienes'])}`
+    const boardToString = board => {
+        return board.map(row => row.map(cell => (cell === 0 ? '⬜' : cell)).join(' ')).join('\n')
+    }
 
-let pp = 'https://media.tvalacarta.info/programas/0/clantve/44-gatos/aida-la-gata-robot.jpg'
+    if (!games[m.sender]) {
+        const board = generateBoard(width, height, mineCount)
+        games[m.sender] = {
+            board,
+            discovered: Array.from({ length: height }, () => Array(width).fill(false)),
+            won: false,
+            lost: false,
+            diamonds: 0
+        }
+    }
 
-let aqua = `${pickRandom([0, 2, 3, 1, 5])}` * 1
-let aquapremium = `${pickRandom([2, 4, 6, 7, 5, 9])}` * 1
+    const board = games[m.sender].board
+    const boardString = boardToString(board)
 
-let rock = `${pickRandom([6, 9, 0, 12, 2])}` * 1
-let rockpremium = `${pickRandom([13, 9, 17, 20, 25])}` * 1
+    const message = {
+        templateMessage: {
+            hydratedTemplate: {
+                hydratedContentText: `*Buscaminas*\n\n${boardString}\n\nPara jugar, selecciona una celda usando el comando:\n${usedPrefix}play x y\n\nEjemplo:\n${usedPrefix}play 1 1`,
+                hydratedFooterText: 'Buena suerte!',
+                hydratedButtons: [
+                    {
+                        quickReplyButton: {
+                            displayText: 'Jugar',
+                            id: `${usedPrefix}play 1 1`
+                        }
+                    }
+                ]
+            }
+        }
+    }
 
-let pancingan = `${pickRandom([1, 0, 2, 1, 0, 0, 0])}` * 1
-let pancinganpremium = `${pickRandom([1, 3, 4, 9, 2, 5, 8])}` * 1
-
-const recompensas = {	
-  aqua: premium ? aquapremium : aqua,
-  rock: premium ? rockpremium : rock,
-  pancingan: premium ? pancinganpremium : pancingan,
+    const messageContent = generateWAMessageFromContent(m.chat, message, {})
+    await conn.relayMessage(m.chat, messageContent.message, { messageId: messageContent.key.id })
 }
-//let xp = Math.floor(Math.random() * 2000)
-let money = `${pickRandom([100, 200, 250, 300, 370, 400, 450, 480, 500, 510, 640, 680, 704, 760, 800, 840, 880, 900, 1000, 1059, 1080, 1100, 1190, 1230, 1380, 1399, 1290, 1300, 1340, 1350, 1590, 1400, 1450, 1700, 1800, 1900, 2000, 0, 0, 10, 1, 99, 999, 1789, 1430])}` * 1
-let moneypremium = `${pickRandom([500, 600, 700, 800, 900, 1000, 1050, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600, 1650, 1700, 1750, 1800, 1850, 1950, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3400, 3500, 3600, 3700, 3800, 3850, 3900, 3950, 4000])}` * 1
 
-let time = user.lastcoins + 600000 //10 min 
-if (new Date - user.lastcoins < 600000) return await conn.reply(m.chat, `*⏱️ 𝙑𝙪𝙚𝙡𝙫𝙖 𝙚𝙣 ${msToTime(time - new Date())} 𝙥𝙖𝙧𝙖 𝙘𝙤𝙣𝙩𝙞𝙣𝙪𝙖𝙧 𝙢𝙞𝙣𝙖𝙣𝙙𝙤 ${global.rpgshopp.emoticon('money')}⛏️*\n\n*𝙂𝙚𝙩 𝙗𝙖𝙘𝙠 𝙞𝙣 ${msToTime(time - new Date())} 𝙩𝙤 𝙢𝙞𝙣𝙚 ${global.rpgshopp.emoticon('money')}⛏️*`, fkontak2,  m)
-user.money += premium ? moneypremium : money  
-let texto = ''
-for (let reward of Object.keys(recompensas)) {
-    if (!(reward in user)) continue
-    user[reward] += recompensas[reward]
-texto += `+${recompensas[reward]} ${global.rpgshop.emoticon(reward)}\n`}
-
-let gat = `*${premium ? '🎟️ Recompensa Premium' : '🆓 Recompensa Gratis'}*\n*${minar}*\n*${money} ${global.rpgshop.emoticon('money')}*\n\n🍁 𝗕 𝗢 𝗡 𝗢\n${texto}\n\n🎟️ 𝗣 𝗥 𝗘 𝗠 𝗜 𝗨 𝗠 ⇢ ${premium ? '✅' : '❌'}\n${wm}`
-await conn.sendFile(m.chat, pp, 'gata.jpg', gat, fkontak2)
-/*conn.sendHydrated(m.chat, `*${premium ? '🎟️ Recompensa Premium' : '🆓 Recompensa Gratis'}*\n*${minar}*\n*${money} ${global.rpgshop.emoticon('money')}*`,`🍁 𝗕 𝗢 𝗡 𝗢\n` + texto + `\n\n🎟️ 𝗣 𝗥 𝗘 𝗠 𝗜 𝗨 𝗠 ⇢ ${premium ? '✅' : '❌'}\n${wm}`, pp, md, '𝙂𝙖𝙩𝙖𝘽𝙤𝙩-𝙈𝘿', null, null, [
-['𝙈𝙞𝙣𝙖𝙧 𝙀𝙓𝙋 ⚡', `.minar`],
-['𝙈𝙞𝙣𝙖𝙧 𝘿𝙞𝙖𝙢𝙖𝙣𝙩𝙚𝙨 💎', `.minar3`],
-['𝙑𝙤𝙡𝙫𝙚𝙧 𝙖𝙡 𝙈𝙚𝙣𝙪́ | 𝘽𝙖𝙘𝙠 𝙩𝙤 𝙈𝙚𝙣𝙪 ☘️', `.menu`]
-], m,)*/
-user.lastcoins = new Date * 1  
-}
-handler.help = ['minar2']
-handler.tags = ['gata']
-handler.command = ['minar2', 'miming2', 'mine2', 'minarfantasy', 'minarcoinsfantasy'] 
-handler.fail = null
-handler.exp = 0
+handler.command = /^buscaminas$/i
 export default handler
 
-function msToTime(duration) {
-var milliseconds = parseInt((duration % 1000) / 100),
-seconds = Math.floor((duration / 1000) % 60),
-minutes = Math.floor((duration / (1000 * 60)) % 60),
-hours = Math.floor((duration / (1000 * 60 * 60)) % 24)
+// Comando play para descubrir celdas
+let playHandler = async (m, { conn, args, usedPrefix }) => {
+    if (!games[m.sender]) return m.reply(`Primero inicia un juego usando el comando ${usedPrefix}buscaminas`)
 
-hours = (hours < 10) ? "0" + hours : hours
-minutes = (minutes < 10) ? "0" + minutes : minutes
-seconds = (seconds < 10) ? "0" + seconds : seconds
+    const x = parseInt(args[0]) - 1
+    const y = parseInt(args[1]) - 1
+    const game = games[m.sender]
 
-return minutes + " m y " + seconds + " s " 
-}  
+    if (x < 0 || x >= game.board[0].length || y < 0 || y >= game.board.length) return m.reply('Coordenadas fuera del rango.')
 
-function pickRandom(list) {
-return list[Math.floor(Math.random() * list.length)]}
+    if (game.discovered[y][x]) return m.reply('Ya has descubierto esta celda.')
+
+    game.discovered[y][x] = true
+
+    if (game.board[y][x] === '💣') {
+        game.lost = true
+        return m.reply('¡Boom! Has perdido. Usa el comando nuevamente para iniciar un nuevo juego.')
+    }
+
+    game.diamonds += game.board[y][x] === 0 ? 1 : game.board[y][x]
+
+    if (game.diamonds >= 5) {
+        game.won = true
+        global.db.data.users[m.sender].limit += game.diamonds
+        return m.reply(`¡Felicidades! Has ganado el juego y has ganado ${game.diamonds} diamantes. Usa el comando nuevamente para iniciar un nuevo juego.`)
+    }
+
+    const boardToString = board => {
+        return board.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (game.discovered[rowIndex][colIndex] ? (cell === 0 ? '⬜' : cell) : '⬛')).join(' ')
+        ).join('\n')
+    }
+
+    const boardString = boardToString(game.board)
+
+    const message = {
+        templateMessage: {
+            hydratedTemplate: {
+                hydratedContentText: `*Buscaminas*\n\n${boardString}\n\nDiamantes ganados: ${game.diamonds}\n\nPara jugar, selecciona una celda usando el comando:\n${usedPrefix}play x y\n\nEjemplo:\n${usedPrefix}play 1 1`,
+                hydratedFooterText: 'Buena suerte!',
+                hydratedButtons: [
+                    {
+                        quickReplyButton: {
+                            displayText: 'Jugar',
+                            id: `${usedPrefix}play 1 1`
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+    const messageContent = generateWAMessageFromContent(m.chat, message, {})
+    await conn.relayMessage(m.chat, messageContent.message, { messageId: messageContent.key.id })
+}
+
+playHandler.command = /^play$/i
+export default playHandler
