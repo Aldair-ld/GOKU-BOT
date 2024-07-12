@@ -8,92 +8,94 @@ import PhoneNumber from 'awesome-phonenumber'
 import { promises } from 'fs'
 import { join } from 'path'
 let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, command }) => {
-const dispositivo = await getDevice(m.key.id)
-try {
-let _package = JSON.parse(await promises.readFile(join(__dirname, '../package.json')).catch(_ => ({}))) || {}
-let { exp, limit, level, role } = global.db.data.users[m.sender]
-let { min, xp, max } = xpRange(level, global.multiplier)
-let name = await conn.getName(m.sender)
-let d = new Date(new Date + 3600000)
-let locale = 'es'
-let weton = ['Pahing', 'Pon', 'Wage', 'Kliwon', 'Legi'][Math.floor(d / 84600000) % 5]
-let week = d.toLocaleDateString(locale, { weekday: 'long' })
-let date = d.toLocaleDateString(locale, {
-day: 'numeric',
-month: 'long',
-year: 'numeric'
-})
-let dateIslamic = Intl.DateTimeFormat(locale + '-TN-u-ca-islamic', {
-day: 'numeric',
-month: 'long',
-year: 'numeric'
-}).format(d)
-let time = d.toLocaleTimeString(locale, {
-hour: 'numeric',
-minute: 'numeric',
-second: 'numeric'
-})
-let _uptime = process.uptime() * 1000
-let _muptime
-if (process.send) {
-process.send('uptime')
-_muptime = await new Promise(resolve => {
-process.once('message', resolve)
-setTimeout(resolve, 1000)
-}) * 1000
-}
-let { money, joincount } = global.db.data.users[m.sender]
-let user = global.db.data.users[m.sender]
-let muptime = clockString(_muptime)
-let uptime = clockString(_uptime)
-let totalreg = Object.keys(global.db.data.users).length
-let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true).length
-let replace = {
-'%': '%',
-p: _p, uptime, muptime,
-me: conn.getName(conn.user.jid),
-npmname: _package.name,
-npmdesc: _package.description,
-version: _package.version,
-exp: exp - min,
-maxexp: xp,
-totalexp: exp,
-xp4levelup: max - exp,
-github: _package.homepage ? _package.homepage.url || _package.homepage : '[unknown github url]',
-level, limit, name, weton, week, date, dateIslamic, time, totalreg, rtotalreg, role,
-readmore: readMore
-}
-text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
-let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-let mentionedJid = [who]
-let username = conn.getName(who)
-let taguser = '@' + m.sender.split("@s.whatsapp.net")[0]
-let pp = gataVidMenu
-let vn = 'https://qu.ax/bfaM.mp3'
-let pareja = global.db.data.users[m.sender].pasangan 
+  const dispositivo = await getDevice(m.key.id)
+  try {
+    // Verificación de registro
+    let user = global.db.data.users[m.sender]
+    if (!user.registered) {
+      return m.reply('❌ No estás registrado. Usa el comando  .inicio  y registrese')
+    }
 
-const lugarFecha = moment().tz('America/Lima')
-const formatoFecha = {
-weekdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-}
-lugarFecha.locale('es', formatoFecha)
-const horarioFecha = lugarFecha.format('dddd, DD [de] MMMM [del] YYYY || HH:mm A').replace(/^\w/, (c) => c.toUpperCase())
-if (!/web|desktop|unknown/gi.test(dispositivo)) {  
-let menu = `
+    let _package = JSON.parse(await promises.readFile(join(__dirname, '../package.json')).catch(_ => ({}))) || {}
+    let { exp, limit, level, role } = user
+    let { min, xp, max } = xpRange(level, global.multiplier)
+    let name = await conn.getName(m.sender)
+    let d = new Date(new Date + 3600000)
+    let locale = 'es'
+    let weton = ['Pahing', 'Pon', 'Wage', 'Kliwon', 'Legi'][Math.floor(d / 84600000) % 5]
+    let week = d.toLocaleDateString(locale, { weekday: 'long' })
+    let date = d.toLocaleDateString(locale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+    let dateIslamic = Intl.DateTimeFormat(locale + '-TN-u-ca-islamic', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(d)
+    let time = d.toLocaleTimeString(locale, {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    })
+    let _uptime = process.uptime() * 1000
+    let _muptime
+    if (process.send) {
+      process.send('uptime')
+      _muptime = await new Promise(resolve => {
+        process.once('message', resolve)
+        setTimeout(resolve, 1000)
+      }) * 1000
+    }
+    let { money, joincount } = user
+    let muptime = clockString(_muptime)
+    let uptime = clockString(_uptime)
+    let totalreg = Object.keys(global.db.data.users).length
+    let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true).length
+    let replace = {
+      '%': '%',
+      p: _p, uptime, muptime,
+      me: conn.getName(conn.user.jid),
+      npmname: _package.name,
+      npmdesc: _package.description,
+      version: _package.version,
+      exp: exp - min,
+      maxexp: xp,
+      totalexp: exp,
+      xp4levelup: max - exp,
+      github: _package.homepage ? _package.homepage.url || _package.homepage : '[unknown github url]',
+      level, limit, name, weton, week, date, dateIslamic, time, totalreg, rtotalreg, role,
+      readmore: readMore
+    }
+    text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
+    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+    let mentionedJid = [who]
+    let username = conn.getName(who)
+    let taguser = '@' + m.sender.split("@s.whatsapp.net")[0]
+    let pp = gataVidMenu
+    let vn = 'https://qu.ax/bfaM.mp3'
+    let pareja = user.pasangan 
+
+    const lugarFecha = moment().tz('America/Lima')
+    const formatoFecha = {
+      weekdays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+      months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    }
+    lugarFecha.locale('es', formatoFecha)
+    const horarioFecha = lugarFecha.format('dddd, DD [de] MMMM [del] YYYY || HH:mm A').replace(/^\w/, (c) => c.toUpperCase())
+    if (!/web|desktop|unknown/gi.test(dispositivo)) {  
+      let menu = `
 
 *•··············•𓊈 URABE_MIKOTO 𓊉•·············•*
 
 ⚡ Bienvenido al Menu Principal de comandos ⚡
-
-
 
  ᴇᴄᴏɴᴏᴍɪ́ᴀ ꙰
 \`Experiencia:\` ${exp} ⚡
 \`Diamantes:\` ${limit} 💎
 \`Coins:\` ${money} 💵
 \`Tokens:\` ${joincount} 🪙
-
 
 📌 Nuestros comandos se encuentran divididos en secciones para facilitar la interaccion del usuario.
 
@@ -104,142 +106,77 @@ let menu = `
 *𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
 •···························•····························•`.trim()
 
-const buttonParamsJson = JSON.stringify({
-title: lenguajeCD['smsListaMenu'](),
-description: "Infórmate por medios",
-sections: [
-{ title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘽𝙤𝙩 🔮",
-rows: [
-{ header: lenguajeCD['smsLista1'](), title: "", description: "INFORMACIÓN DEL BOT", id: usedPrefix + "estado" }
-]},
-{ title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘾𝙧𝙚𝙖𝙙𝙤𝙧 🍃",
-rows: [
-{ header: lenguajeCD['smsLista2'](), title: "", description: "𝙸𝙽𝙵𝙾𝚁𝙼𝙰𝙲𝙸𝙾𝙽 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁", id: usedPrefix + "owner" }
-]},
-{ title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝙈𝙚𝙣𝙪́𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙤 📚",
-rows: [
-{ header: lenguajeCD['smsLista6'](), title: "", description: "𝙸𝙽𝙵𝙾 𝙳𝙴 𝚃𝙾𝙳𝙰 𝙻𝙰 𝙻𝙸𝚂𝚃𝙰 𝙳𝙴 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂", id: usedPrefix + "menu2" }
-]},
-]})
-const interactiveMessage = {
-body: { text: menu },
-footer: { text: fantasy + ` \n` },
-header: { title: `
+      const buttonParamsJson = JSON.stringify({
+        title: lenguajeCD['smsListaMenu'](),
+        description: "Infórmate por medios",
+        sections: [
+          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙆𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘽𝙤𝙩 🔮",
+            rows: [
+              { header: lenguajeCD['smsLista1'](), title: "", description: "INFORMACIÓN DEL BOT", id: usedPrefix + "estado" }
+            ]},
+          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙆𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘾𝙧𝙚𝙖𝙙𝙤𝙧 🍃",
+            rows: [
+              { header: lenguajeCD['smsLista2'](), title: "", description: "𝙸𝙽𝙵𝙊𝚁𝙼𝙰𝙲𝙸𝙾𝙽 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁", id: usedPrefix + "owner" }
+            ]},
+          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝙈𝙚𝙣𝙪́𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙤 📚",
+            rows: [
+              { header: lenguajeCD['smsLista6'](), title: "", description: "𝙸𝙽𝙵𝙊 𝙳𝙴 𝚃𝙾𝘿𝘼 𝙻𝙰 𝙻𝙸𝚂𝚃𝙰 𝙳𝙴 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂", id: usedPrefix + "menu2" }
+            ]},
+        ]})
+      const interactiveMessage = {
+        body: { text: menu },
+        footer: { text: fantasy + ` \n` },
+        header: { title: `
      ╰ᴍᴇɴᴜ́:`, subtitle: "test4", hasMediaAttachment: false },
-nativeFlowMessage: { buttons: [{ 
-name: "single_select",
-buttonParamsJson
-}]
-}}
-const message = { messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 }, interactiveMessage }
-await conn.relayMessage(m.chat, { viewOnceMessage: { message } }, {})
+        nativeFlowMessage: { buttons: [{ 
+          name: "single_select",
+          buttonParamsJson
+        }]
+      }}
+      const message = { messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 }, interactiveMessage }
+      await conn.relayMessage(m.chat, { viewOnceMessage: { message } }, {})
 
-} else { 
-let menu = `${lenguajeGB['smsConfi2']()} *${user.genero === 0 ? '👤' : user.genero == 'Ocultado 🕶️' ? `🕶️` : user.genero == 'Mujer 🚺' ? `🚺` : user.genero == 'Hombre 🚹' ? `🚹` : '👤'} ${user.registered === true ? user.name : taguser} 💖*
+    } else { 
+      let menu = `${lenguajeGB['smsConfi2']()} *${name}*
 
-\`\`\`${horarioFecha}\`\`\`
-*${lenguajeCD['smsTotalUsers']()}* ➺ _${Object.keys(global.db.data.users).length}_ 
-*Registrados »* ${rtotalreg}/${totalreg}    
-*${lenguajeCD['smsUptime']()}* ➺ _${uptime}_ 
-*${lenguajeCD['smsVersion']()}* ➺ _${vs}_
-*${lenguajeCD['smsMode']()} ➺* _${global.opts['self'] ? `${lenguajeCD['smsModePrivate']().charAt(0).toUpperCase() + lenguajeCD['smsModePrivate']().slice(1).toLowerCase()}` : `${lenguajeCD['smsModePublic']().charAt(0).toUpperCase() + lenguajeCD['smsModePublic']().slice(1).toLowerCase()}`}_
-⎔ *${lenguajeCD['smsBanChats']()}* ➺ _${Object.entries(global.db.data.chats).filter(chat => chat[1].isBanned).length}_ 
-⎔ *${lenguajeCD['smsBanUsers']()}* ➺ _${Object.entries(global.db.data.users).filter(user => user[1].banned).length}_ ${(conn.user.jid == global.conn.user.jid ? '' : `\n⎔ *SOY SUB BOT DE: https://wa.me/${global.conn.user.jid.split`@`[0]}*`) || ''}
+📅 *FECHA* 
+📌 *${horarioFecha}*
 
-*◜INFORMACIÓN DEL USUARIO◞*
-*Tipo de registro »* ${user.registered === true ? `_${user.registroC === true ? 'Registro Completo 🗂️' : 'Registro Rápido 📑'}_` : '❌ _Sin registro_'}
-*Mi estado »* ${typeof user.miestado !== 'string' ? '❌ _' + usedPrefix + 'miestado_' : '_Me siento ' + user.miestado + '_'}
-*Registrado »* ${user.registered === true ? '✅' : '❌ _' + usedPrefix + 'verificar_'}
-*${lenguajeGB['smsBotonM7']().charAt(0).toUpperCase() + lenguajeGB['smsBotonM7']().slice(1).toLowerCase()} »* ${user.premiumTime > 0 ? '✅' : '❌ _' + usedPrefix + 'pase premium_'}
-*${lenguajeGB['smsBotonM5']().charAt(0).toUpperCase() + lenguajeGB['smsBotonM5']().slice(1).toLowerCase()} »* ${role}
- *${lenguajeGB['smsBotonM6']().charAt(0).toUpperCase() + lenguajeGB['smsBotonM6']().slice(1).toLowerCase()} »* ${emoji} || ${user.exp - min}/${xp}
- *${lenguajeGB['smsPareja']()}* ${pareja ? `\n*»* ${name} 💕 ${conn.getName(pareja)}` : `🛐 ${lenguajeGB['smsResultPareja']()}`}
- *Pasatiempo(s)* ➺ ${user.pasatiempo === 0 ? '*Sin Registro*' : user.pasatiempo + '\n'}
-*Experiencia ➟* ${exp} ⚡
-*Diamantes ➟* ${limit} 💎
-*Coins ➟* ${money} 🐈
-*Tokens ➟* ${joincount} 🪙
+⚡ *Economía* ⚡
 
-╭━〔 OPCIONES DE MENU 
-┃
-┃Ⓜ️ _*MENÚ COMPLETO*_ 
-┃➺ _${usedPrefix}menucompleto | allmenu_
-┃
-┃🔊 _*MENÚ DE AUDIOS*_ 
-┃➺ _${usedPrefix}menuaudio | menuaudios_
-┃
-┃💫 _${lenguajeCD['smsTex13']()}_ 
-┃➺ _${usedPrefix}infomenu_
-┃
-┃👾 _${lenguajeCD['smsTex10']()}_ 
-┃➺ _${usedPrefix}juegosmenu_
-┃
-┃🚀 _${lenguajeCD['smsTex9']()}_ 
-┃➺ _${usedPrefix}descargasmenu_
-┃
-┃🔐 _${lenguajeCD['smsTex11']()}_ 
-┃➺ _${usedPrefix}grupomenu_
-┃
-┃🧸 _${lenguajeCD['smsTex22']()}_ 
-┃➺ _${usedPrefix}stickermenu_
-┃
-┃🛠️ _${lenguajeCD['smsTex12']()}_ 
-┃➺ _${usedPrefix}herramientasmenu_
-┃
-┃⛩️ _${lenguajeCD['smsTex23']()}_ 
-┃➺ _${usedPrefix}randommenu_
-┃
-┃🛰️ _${lenguajeCD['smsTex8']()}_ 
-┃➺ _${usedPrefix}convertidormenu_
-┃
-┃🎈 _${lenguajeCD['smsTex1']()}_
-┃➺ _${usedPrefix}buscarmenu_
-┃
-┃🎧 _${lenguajeCD['smsTex2']()}_ 
-┃➺ _${usedPrefix}audioefectomenu_
-┃
-┃🔞 _${lenguajeCD['smsTex3']()}_ 
-┃➺ _${usedPrefix}menu18 | hornymenu_
-┃
-┃⚗️ _${lenguajeCD['smsTex21']()}_ 
-┃➺ _${usedPrefix}rpgmenu_
-┃
-┃⛺ _${lenguajeCD['smsTex14']()}_ 
-┃➺ _${usedPrefix}makermenu_
-┃
-┃💮 _${lenguajeCD['smsTex15']()}_ 
-┃➺ _${usedPrefix}menulogos2_
-┃
-┃🌅 _${lenguajeCD['smsTex15']()}_ 
-┃➺ _${usedPrefix}menulogos2_
-┃
-┃💎 _${lenguajeCD['smsTex20']()}_ 
-┃➺ _${usedPrefix}ownermenu_
-┃
-┃☄️ *_CUENTAS OFICIALES _* 
-┃➺ _${usedPrefix}cuentas | cuentas_
-┃
-*╰━━━━━━━━━━━━━⬣*`.trim()
-await conn.sendFile(m.chat, fantasyImg, 'lp.jpg', menu, fkontak, false, { contextInfo: {mentionedJid, externalAdReply :{ mediaUrl: null, mediaType: 1, description: null, title: gt, body: ' 𝐅𝐚𝐧𝐭𝐚𝐬𝐲𝐁𝐨𝐭-𝐌𝐃 ', previewType: 0, thumbnail: imagen4, sourceUrl: canalofc}}}) 
-await conn.sendMessage(m.chat, { audio: { url: vn }, fileName: 'error.mp3', mimetype: 'audio/mp4', ptt: true }, { quoted: m }) 
-//natsuki.sendFile(m.chat, fantasyVidMenu.getRandom(), 'fantasy.mp4', menu, fkontak)
-}} catch (e) {
-await m.reply(lenguajeCD['smsMalError3']() + '\n*' + lenguajeCD.smsMensError1() + '*\n*' + usedPrefix + `${lenguajeCD.lenguaje() == 'es' ? 'reporte' : 'report'}` + '* ' + `${lenguajeCD.smsMensError2()} ` + usedPrefix + command)
-console.log(`❗❗ ${lenguajeCD['smsMensError2']()} ${usedPrefix + command} ❗❗`)
-console.log(e)}}
+💎 *Diamantes*: ${limit}
+🔮 *Nivel*: ${level}
+🎖 *Rol*: ${role}
+✨ *EXP*: ${exp} / ${maxexp}
+🏵 *Coins*: ${money}
+🎟 *Tokens*: ${joincount}
 
-handler.command = /^(menu|Menú|Menu|menú||menulista\?)$/i
-//handler.register = true
+💫 *Información* 💫
+
+👾 *Versión:* ${_package.version}
+📦 *Bug:* ${_package.homepage ? _package.homepage.url || _package.homepage : '[unknown github url]'}
+🎨 *Diseño*: Aleja Duran
+👨🏻‍💻 *Programador*: Aldair Dev
+`.trim()
+
+      await conn.sendFile(m.chat, gataVidMenu, 'gata.mp4', menu, m)
+      await conn.sendMessage(m.chat, { text: gataMenuInfo, mentions: conn.parseMention(gataMenuInfo) }, { quoted: m })
+    }
+  } catch (e) {
+    console.log(e)
+    return conn.sendMessage(m.chat, { text: 'Lo siento, ocurrió un error al procesar tu solicitud.' }, { quoted: m })
+  }
+}
+handler.command = /^(menu)$/i
+
 export default handler
 
-const more = String.fromCharCode(8206)
-const readMore = more.repeat(4001)
 function clockString(ms) {
-let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
-let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
-let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')}
-
+  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
+  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
+  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
+  return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')
+}
 
 
 
