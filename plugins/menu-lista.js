@@ -82,7 +82,6 @@ const horarioFecha = lugarFecha.format('dddd, DD [de] MMMM [del] YYYY || HH:mm A
 
 if (!/web|desktop|unknown/gi.test(dispositivo)) {  
 let menu = `
-
 *•··············•𓊈 URABE_MIKOTO 𓊉•·············•*
 
 ⚡ Bienvenido al Menu Principal de comandos ⚡
@@ -90,10 +89,11 @@ let menu = `
 
 
  ᴇᴄᴏɴᴏᴍɪ́ᴀ ꙰
-\`Experiencia:\` ${exp} ⚡
-\`Diamantes:\` ${limit} 💎
-\`GokuCoins:\` ${money} 💵
-\`Tokens:\` ${joincount} 🪙
+\Experiencia:\ ${exp} ⚡
+\Diamantes:\ ${limit} 💎
+\Coins:\ ${money} 💵
+\Tokens:\ ${joincount} 🪙
+
 
 📌 Nuestros comandos se encuentran divididos en secciones para facilitar la interaccion del usuario.
 
@@ -101,7 +101,8 @@ let menu = `
 
 *SE AGREGARAN MAS COMANDOS A LA LISTA*
 
-*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*`.trim()
+*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
+•···························•····························•`.trim()
 
 const buttonParamsJson = JSON.stringify({
 title: lenguajeCD['smsListaMenu'](),
@@ -124,8 +125,7 @@ const interactiveMessage = {
 body: { text: menu },
 footer: { text: fantasy + ` \n` },
 header: { title: `
-     ╰ᴍᴇɴᴜ́:\n*𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
- "test4", hasMediaAttachment: false },
+     ╰ᴍᴇɴᴜ́:`, subtitle: "test4", hasMediaAttachment: false },
 nativeFlowMessage: { buttons: [{ 
 name: "single_select",
 buttonParamsJson
@@ -239,8 +239,6 @@ let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
 let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
 let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
 return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')}
-
-
 
 
 
