@@ -44,9 +44,6 @@ setTimeout(resolve, 1000)
 }
 let { money, joincount } = global.db.data.users[m.sender]
 let user = global.db.data.users[m.sender]
-if (!user || !user.registered) {
-  return await conn.reply(m.chat, 'Debes registrarte usa el comando  .inicio  para saber como registrarte', { quoted: m })
-}
 let muptime = clockString(_muptime)
 let uptime = clockString(_uptime)
 let picture = './media/menus/Menu1.jpg'
@@ -106,10 +103,10 @@ ciudad = 'Lima'
 let menu = `╭──────༺♡༻──────╮
    𝙱𝙸𝙴𝙽𝚅𝙴𝙽𝙸𝙳𝙾 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙳𝙴  
 
-   *𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾*
+   *URABE - MIKOTO*
 ╰──────༺♡༻──────╯
 
- • ${fantasy}${conn.user.jid == global.conn.user.jid ? '' : `\n *𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾* 𝑺𝒖𝒃 𝑩𝒐𝒕 ⇢ wa.me/+${global.conn.user.jid.split`@`[0]}`}
+ • ${fantasy}${conn.user.jid == global.conn.user.jid ? '' : `\n *URABE - MIKOTO* 𝑺𝒖𝒃 𝑩𝒐𝒕 ⇢ wa.me/+${global.conn.user.jid.split`@`[0]}`}
 
 ➯ *HOLA: ⁨${taguser}*
 ➯ *FECHA ACTUAL:* \`${formatDate}\`
@@ -117,7 +114,7 @@ let menu = `╭──────༺♡༻──────╮
 
 𝙲𝙰𝙽𝙰𝙻:  https://whatsapp.com/channel/0029VafZvB6J3jv3qCnqNu3x
 
-𝙲𝚁𝙴𝙰𝙳𝙾𝚁: https://wa.me/+51925015528
+𝙲𝚁𝙴𝙰𝙳𝙾𝚁: https://wa.me/51925015528
 
 𝙸𝙽𝚂𝚃𝙰𝙶𝚁𝙰𝙼 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁: https://www.instagram.com/aldair_dki
 
@@ -134,8 +131,6 @@ let menu = `╭──────༺♡༻──────╮
 ➢ 👑 𝙿𝚁𝙴𝙼𝙸𝚄𝙼 ➪ ${user.premiumTime > 0 ? '✅' : '❌ _' + usedPrefix + 'pase premium_'}
 
 ╰──────༺♡༻──────╯
-
-.inicio  para dar inicio al bot 
 
 ╭──────༺♡༻──────╮
      ✨INFO SOBRE EL BOT✨
@@ -513,3 +508,4 @@ let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
 let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
 let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
 return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')}
+
