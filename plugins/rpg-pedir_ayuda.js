@@ -35,7 +35,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         let prem = global.prems.includes(who.split@[0]);
         let status = user.banned ? 'BANEADO' : 'LIBRE';
 
-        let str =
+        let str =`
 
 [#URABE_MIKOTO]
 
@@ -49,8 +49,7 @@ let handler = async (m, { conn, usedPrefix }) => {
 *[〽️] PREMIUM →*  ${prem ? '✅' : '❎'}
 *[👺] ESTADO →*  ${status}
 *[📅] REGISTRO →*  ${new Date(regTime).toLocaleString()}
-*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=51973846456&text=.menu
-.trim();
+*[🔗] ENLACE DE REFERIDO →*  https://api.whatsapp.com/send/?phone=51973846456&text=.menu `.trim();
 
         const mentionedJid = [who];
         const sn = createHash('md5').update(who).digest('hex');
