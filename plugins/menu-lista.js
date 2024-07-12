@@ -7,13 +7,14 @@ const { levelling } = '../lib/levelling.js'
 import PhoneNumber from 'awesome-phonenumber'
 import { promises } from 'fs'
 import { join } from 'path'
+
 let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, command }) => {
   const dispositivo = await getDevice(m.key.id)
   try {
     // Verificación de registro
     let user = global.db.data.users[m.sender]
-    if (!user.registered) {
-      return m.reply('❌ No estás registrado. Usa el comando  .inicio  y registrese')
+    if (!user || !user.registered) {
+      return m.reply('❌ No estás registrado. Usa el comando ' + usedPrefix + 'verificar para registrarte.')
     }
 
     let _package = JSON.parse(await promises.readFile(join(__dirname, '../package.json')).catch(_ => ({}))) || {}
@@ -69,9 +70,9 @@ let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, com
       readmore: readMore
     }
     text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
-    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+    let who = (m.mentionedJid && m.mentionedJid[0]) ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
     let mentionedJid = [who]
-    let username = conn.getName(who)
+    let username = await conn.getName(who)
     let taguser = '@' + m.sender.split("@s.whatsapp.net")[0]
     let pp = gataVidMenu
     let vn = 'https://qu.ax/bfaM.mp3'
@@ -110,7 +111,7 @@ let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, com
         title: lenguajeCD['smsListaMenu'](),
         description: "Infórmate por medios",
         sections: [
-          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙆𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘽𝙤𝙩 🔮",
+          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝘽𝙤𝙩 🔮",
             rows: [
               { header: lenguajeCD['smsLista1'](), title: "", description: "INFORMACIÓN DEL BOT", id: usedPrefix + "estado" }
             ]},
@@ -118,9 +119,9 @@ let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, com
             rows: [
               { header: lenguajeCD['smsLista2'](), title: "", description: "𝙸𝙽𝙵𝙊𝚁𝙼𝙰𝙲𝙸𝙾𝙽 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁", id: usedPrefix + "owner" }
             ]},
-          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙺𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝙈𝙚𝙣𝙪́𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙤 📚",
+          { title: "(𝚄𝚁𝙰𝙱𝙴 - 𝙼𝙸𝙆𝙾𝚃𝙾) 𝙄𝙣𝙛𝙤 𝙈𝙚𝙣𝙪́𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙤 📚",
             rows: [
-              { header: lenguajeCD['smsLista6'](), title: "", description: "𝙸𝙽𝙵𝙊 𝙳𝙴 𝚃𝙾𝘿𝘼 𝙻𝙰 𝙻𝙸𝚂𝚃𝙰 𝙳𝙴 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂", id: usedPrefix + "menu2" }
+              { header: lenguajeCD['smsLista6'](), title: "", description: "𝙸𝙽𝙁𝙊 𝙳𝙴 𝚃𝙾𝘿𝘼 𝙻𝙰 𝙻𝙸𝚂𝚃𝙰 𝙳𝙴 𝙲𝙾𝙼𝙰𝙽𝙳𝙾𝚂", id: usedPrefix + "menu2" }
             ]},
         ]})
       const interactiveMessage = {
@@ -134,10 +135,11 @@ let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, com
         }]
       }}
       const message = { messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 }, interactiveMessage }
-      await conn.relayMessage(m.chat, { viewOnceMessage: { message } }, {})
-
-    } else { 
-      let menu = `${lenguajeGB['smsConfi2']()} *${name}*
+      await conn.relayMessage(m.chat, { viewOnceMessage: { message: message } }, {})
+    } else {
+      let gataMenuInfo = gataMenu.replace('%', '')
+      let menu = `*TÍTULO DEL MENÚ*
+]()} *${name}*
 
 📅 *FECHA* 
 📌 *${horarioFecha}*
@@ -156,7 +158,7 @@ let handler = async (m, { conn, usedPrefix, usedPrefix: _p, __dirname, text, com
 👾 *Versión:* ${_package.version}
 📦 *Bug:* ${_package.homepage ? _package.homepage.url || _package.homepage : '[unknown github url]'}
 🎨 *Diseño*: Aleja Duran
-👨🏻‍💻 *Programador*: Aldair Dev
+👨🏻‍💻 *Programador*: ALDAIR Dev
 `.trim()
 
       await conn.sendFile(m.chat, gataVidMenu, 'gata.mp4', menu, m)
@@ -177,6 +179,7 @@ function clockString(ms) {
   let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
   return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')
 }
+
 
 
 
